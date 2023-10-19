@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- icon -->
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png')}}" type="image/x-icon">
+
+  <!-- bootstrap css連結 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+  <!-- CSS連結 -->
+  <link rel="stylesheet" href="manager_page.css">
+  <!-- Jquery連結 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <!-- Fontawesome連結 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ben">
+    <meta name="description" content="實踐大學高雄校區的宿舍維修系統">
+
+  <title>管理員頁面</title>
+  
+
+</head>
+
+<body>
+  <div class="container-all">
+    <!-- left -->
+    <div class="container-left">
+      <nav id="sidebar">
+        
+        <!-- button -->
+        <button type="button" id="collapse" class="collaspe-btn">
+          <i class="fas fa-align-left"></i>
+        </button>
+        <!-- list -->
+        <ul class="list-unstyled">
+          <p> 維修管理端 </p>
+          <li>
+            <a href="#">維修單 <i class="fa-regular fa-file"></i></a>
+          </li>
+          <!-- <li>
+            <a href="#">帳號管理? <i class="fa-regular fa-user"></i></a>
+          </li> -->
+          <li class="mt-auto">
+            <a class="out" href="/manager_signout">登出 <i class="fa-regular fa-arrow-left-to-line"></i></a>
+          </li>
+        </ul>
+
+        </ul>
+      </nav>
+    </div>
+    
+    <!-- right -->
+    <div class="container-right">
+      <div class="container md-6">
+        <div class="toptitle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"/>
+          </svg>
+          篩選器
+        </div>
+        <div class="filters">
+          <div class="dorm">
+            <span>棟別</span>
+            <button type="button" class="btn">ALL</button>
+            <button type="button" class="btn" name="B1">B1宿</button>
+            <button type="button" class="btn" name="B2">B2宿</button>
+            <button type="button" class="btn" name="H">H宿</button>
+            <button type="button" class="btn" name="M">M宿</button>
+            <button type="button" class="btn" name="N">N宿</button>
+          </div>
+          <!-- <div class="category">
+            <span>工作類別</span>
+            <button type="button" class="btn">ALL</button>
+            <button type="button" class="btn">水電</button>
+            <button type="button" class="btn">一般維修</button>
+          </div> -->
+          <div class="status">
+            <span>狀態</span>
+            <button type="button" class="btn">ALL</button>
+            <button type="button" class="btn" name="">待確認</button>
+            <button type="button" class="btn">已確認</button>
+            <button type="button" class="btn">處理中</button>
+            <button type="button" class="btn">待料中</button>
+            <button type="button" class="btn">已完工</button>
+          </div>
+        </div>
+
+      </div>
+      <hr>
+
+
+      <dialog id="dialog" class="dialog">
+        <p id="dialog_content" class="dialog_content"></p>
+        <button id="close" class="close">&times;</button>
+    </dialog>
+      <!-- list -->
+      <div class="container md-6">
+        <div class="fix-index row">
+          <span class="col-2">|棟別</span>
+          <span class="col-2">|姓名</span>
+          <span class="col-2">|項目</span>
+          <span class="col-2">|床位</span>
+          <span class="col-2">|狀態</span>
+          <span class="col-2">|操作</span>
+        </div>
+      </div>
+      <!-- detail -->
+      <div class="fix-list container" id="fix-list">
+       
+        <!-- <div class="fixbox bg-light">
+          <span>123</span>
+          <span>123</span>
+          <span>123</span>
+          <span>123</span>
+        </div>
+        <div class="fixbox bg-light">123</div>
+        <div class="fixbox bg-light">123</div>
+        <div class="fixbox bg-light">123</div>
+        <div class="fixbox bg-light">123</div> -->
+      </div>
+      
+
+      
+  </div>
+</div>
+
+
+<!-- bootstrap js連結 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+    crossorigin="anonymous"></script>
+<!-- JavaScript連結 -->
+<script src="manager_page.js"></script>
+    <script>
+//       $(document).ready(function(){
+//       $("#myInput").on("keyup", function() {
+//         var value = $(this).val().toLowerCase();
+//         $("#myTable tr").filter(function() {
+//           $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+//     });
+//   });
+// });
+    </script>
+  </body>
+
+
+
+</html>

@@ -1,0 +1,57 @@
+{% extends "bootstrap/base.html" %}
+{% block head %}
+{{super()}}
+<link rel="icon" href="{{ url_for('static', filename='favicon.png')}}" type="image/x-icon">
+{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block navbar %}
+
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="navbar-brand" style="flex: auto;">實踐大學高雄校區宿舍維修系統</div>
+        </div>
+        
+        <div class="navbar-collapse collapse navbar-right">
+            <span class="navbar-text">
+                Hi! {{ session['name'] }}
+              </span>
+              <ul class="nav navbar-nav">
+                <li><a href="/signout">登出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- <div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="navbar-brand">實踐大學高雄校區宿舍維修系統</div>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+            </ul>
+        </div>
+    </div>
+</div> -->
+{% endblock %}
+
+{% block content %}
+{% block page_content %}{% endblock %}
+{% endblock %}
+
+

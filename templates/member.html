@@ -1,0 +1,428 @@
+<html>
+
+<head>
+    <!-- icon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png')}}" type="image/x-icon">
+    <!-- bootstrap css連結 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="member.css" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+        <div class="container-fluid">
+          <span class="navbar-brand">實踐大學高雄校區宿舍維修系統</span>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              
+              <span class="navbar-text">
+                Hi! {{ session['student_name'] }} &emsp;
+              </span>
+             
+                <li class="nav-item">
+                    <a class="nav-link" href="/signout">登出 &emsp;</a>
+                </li>
+            
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+
+    <main onload="init();">
+        <div class="page-header">
+            <div class="top-container">
+                <div class="title">維修進度</div>
+                <div class="prolist">
+                    <div onclick="prev()" class="prev">
+                        <div class="icleft">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="procontent" id="procontent">
+
+                    </div>
+
+                    <dialog id="dialog" class="dialog">
+                        <p id="dialog_content" class="dialog_content"></p>
+                        <button id="close" class="close">&times;</button>
+                    </dialog>
+
+                    <div onclick="next()" class="next">
+                        <div class="icright">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="fixform">維修表單</div>
+
+            <form action="/forms" method="post"> <!-- form 表單 -->
+                <div class="user">你正在以 {{ studentid }} {{ student_name }} 的身分提交表單</div>
+
+
+                <!-- <label for="inputPassword5" class="form-label">Password</label>
+                <input type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock"> -->
+                <!--  -->
+                <div class="dorm">
+                    <p class="dorm_title">棟別</p>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dorm" id="inlineRadio1" value="B1">
+                        <label class="form-check-label" for="inlineRadio1">B1</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dorm" id="inlineRadio1" value="B2">
+                        <label class="form-check-label" for="inlineRadio1">B2</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dorm" id="inlineRadio1" value="H">
+                        <label class="form-check-label" for="inlineRadio1">H</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dorm" id="inlineRadio1" value="N">
+                        <label class="form-check-label" for="inlineRadio1">M</label>
+                    </div>
+                </div>
+
+
+                <div class="">
+                    <p class="place_title">地點</p>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="place" id="inlineRadio1" value="寢室">
+                        <label class="form-check-label" for="inlineRadio1">寢室</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="place" id="inlineRadio1" value="公共區域">
+                        <label class="form-check-label" for="inlineRadio1">公共區域</label>
+                    </div>
+                </div>
+
+
+                <div class="">
+                    <p class="fix_subject_title">項目</p>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="fix_subject" id="inlineRadio1" value="電燈" onclick="hidethers()">
+                        <label class="form-check-label" for="inlineRadio1">電燈</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="fix_subject" id="inlineRadio1" value="門栓" onclick="hidethers()">
+                        <label class="form-check-label" for="inlineRadio1">門栓</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="fix_subject" id="inlineRadio1" value="窗戶" onclick="hidethers()">
+                        <label class="form-check-label" for="inlineRadio1">窗戶</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="fix_subject" id="inlineRadio1" value="鏡子" onclick="hidethers()">
+                        <label class="form-check-label" for="inlineRadio1">鏡子</label>
+                    </div>
+                    <br/>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="fix_subject" id="inlineRadio1" value="水龍頭" onclick="hidethers()">
+                        <label class="form-check-label" for="inlineRadio1">水龍頭</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="fix_subject" id="inlineRadio1" value="洗衣機" onclick="hidethers()">
+                        <label class="form-check-label" for="inlineRadio1">洗衣機</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="fix_subject" id="inlineRadio1" value="消防設備" onclick="hidethers()">
+                        <label class="form-check-label" for="inlineRadio1">消防設備</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="fix_subject" id="others" value="其他" onclick="showothers()">
+                        <label class="form-check-label" for="inlineRadio1">其他</label>
+                    </div>
+                    </div>
+                    <br/>
+                    <div class="other_fix_items mb-3">
+                        <label for="other_fix_items" id="other_fix_items_title" class="form-label">其他維修項目</label>
+                        <textarea class="form-control" name="other_fix_items" id="other_fix_items" rows="3"></textarea>
+                    </div>
+
+                    <div class="explain mb-3">
+                        <label for="explain" class="form-label">說明</label>
+                        <textarea class="form-control" name="explain" id="explain" rows="3"></textarea>
+                    </div>
+
+                <!-- <div class="mb-3">
+                    <label for="formFileMultiple" class="form-label">照片上傳</labeBl>
+                    <input class="form-control" type="file" id="formFileMultiple" multiple>
+                    <div id="passwordHelpBlock" class="form-text">
+                        Your password must be 8-20 characters long, contain letters and numbers, and must not contain
+                        spaces, special characters, or emoji.
+                    </div>
+                </div> -->
+                
+                <input class="btn btn-outline-primary" type="submit" value="確認">
+            </form>
+        </div>
+    </main>
+    <!-- bootstrap js連結 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
+
+<script type="text/javascript">
+    // 防止跳出重新繳交表單
+    // function init(){
+    //     window.history.replaceState(null, null, window.location.href);
+    // }
+
+    other_items = document.getElementById("other_fix_items");
+    other_items_title = document.getElementById("other_fix_items_title");
+    
+    others = document.getElementById("others");
+    other_items.style.display = 'none';
+    other_items_title.style.display = 'none';
+    
+    function showothers(){
+        other_items.style.display = 'block';
+        other_items_title.style.display = 'block';
+        // 表單驗證必須輸入(開啟)
+        // other_items.required = 'true';
+        // other_items.disabled= false;
+    }
+
+    function hidethers(){
+        other_items.innerHTML = "";
+        other_items.value = "";
+        other_items.style.display = 'none';
+        other_items_title.style.display = 'none';
+        // 表單驗證必須輸入(關閉)
+        // other_items.required = 'false';
+        // other_items.disabled= true;
+    }
+
+    // if (others.checked){
+    //     other_items.style.display= 'block';   
+    //     other_items_title.style.display= 'block';
+    // }
+    // else{
+    //     other_items.style.display = 'none';
+    //     other_items_title.style.display = 'none';
+    // }
+    
+
+    var box;
+    var a = 0;
+
+    function init() {
+        var btn = document.getElementById("btn");
+
+        btn.addEventListener('click'/*事件名稱*/, submit/*對應的處理函式*/);
+    }
+
+    // 送出表單後跳出提示      處理中!!
+    function submit() { //準備一個事件處理器(對應事件的函式)
+        alert('表單送出成功!');
+        console.log('we get it');
+    }
+
+
+    window.onload = function () {
+        // box為點擊後被左右滑動的螢幕
+        box = document.getElementById("procontent");
+        // dialog 為被點擊後跳出的說明欄
+        // dialog= document.getElementById("dialog");
+    }
+    // 點擊後procontent往左
+    function prev() {
+        box.scrollBy(-200, 0);  //重點
+    }
+    // 點擊後procontent往右
+    function next() {
+        box.scrollBy(200, 0);
+    }
+
+
+    // 點擊後跳出dialog
+    function showDialog() {
+        dialog.style.display = "block";
+    }
+    // // 點擊後關閉dialog
+    function closeDialog() {
+        dialog.style.display = "none";
+    }
+
+    // 都不顯示 幹你娘==，記得把js移到html後面，你馬搞有夠久==
+    // 動態新增進度敘述
+    var content = document.getElementById("procontent");
+    var prolist = document.getElementsByClassName("prolist");
+     
+
+
+    fetch('/progress')
+        .then(response => response.json())
+        .then(progress => {
+
+            // 在控制台上顯示獲取的資料
+            console.log(progress);
+            // console.log(progress.length);
+            // console.log(progress[1][1]);
+
+            // 動態新增div
+            for (let i = progress.length - 1; i >= 0; i--) {
+                const probox = document.createElement('div');
+                probox.setAttribute('class', 'probox');
+
+                // 設定在dialog內的內容
+                const prodialog = document.createElement('div');
+                prodialog.setAttribute('class', 'prodialog');
+                
+
+                // 增加dialog
+                // const dialog = document.createElement('div');
+                // dialog.setAttribute('class', 'dialog');
+                // dialog.setAttribute('id', 'dialog');
+                // dialog.innerHTML = 'a';
+
+                // // 增加dialog的x
+                // const close = document.createElement('div');
+                // close.setAttribute('class', 'close');
+                // close.setAttribute('id', 'close');
+                // close.innerHTML = '&times';
+
+                // 新增item欄位
+                const item = document.createElement('p');
+                item.setAttribute('class', 'item');
+
+                // 新增dorm欄位
+                const dorm = document.createElement('p');
+                dorm.setAttribute('class', 'dorm');
+
+                // 新增place欄位
+                const place = document.createElement('p');
+                place.setAttribute('class', 'place');
+
+                // 新增number欄位
+                const  number= document.createElement('p');
+                number.setAttribute('class', 'number');
+
+                // 新增subtimes欄位
+                const subtimes = document.createElement('p');
+                subtimes.setAttribute('class', 'subtimes');
+
+                // 新增explain欄位
+                const explain = document.createElement('p');
+                explain.setAttribute('class', 'explain');
+
+                // 新增status欄位
+                const status = document.createElement('p');
+                status.setAttribute('class', 'status');
+                
+                // 判別fix_subject和other_fix_subject
+                if (progress[i][0] == "其他"){
+                    item.innerHTML = progress[i][7];
+                }
+                else{
+                    item.innerHTML = progress[i][0];
+                }
+
+                dorm.innerHTML = '棟別: ' + progress[i][1];
+                place.innerHTML = '地點: ' + progress[i][2];
+                number.innerHTML = '寢室: ' + progress[i][3];
+                subtimes.innerHTML = '繳交時間: ' + progress[i][4];
+                explain.innerHTML = '說明: <br/>' + progress[i][5];
+                status.innerHTML = progress[i][6];
+
+
+                
+                
+                // 將div新增到指定的div中,把指定內容放入div(prodialog內的內容)
+                // prodialog.appendChild(item);
+                // prodialog.appendChild(dorm);
+                // prodialog.appendChild(place);
+                // prodialog.appendChild(number);
+                // prodialog.appendChild(subtimes);
+                // prodialog.appendChild(explain);
+                // prodialog.appendChild(status);
+
+                // 將div新增到指定的div中,把指定內容放入div(probox內的內容)
+                content.appendChild(probox);
+                probox.appendChild(item);
+                // probox.appendChild(dorm);
+                // probox.appendChild(place);
+                // probox.appendChild(number);
+                probox.appendChild(subtimes);
+                // probox.appendChild(explain);
+                probox.appendChild(status);
+
+                
+                
+
+                const divs = document.querySelectorAll('.probox');
+                
+
+                // 為每個被新增的 div 綁定一個點擊事件
+                divs.forEach((div) => {
+                    div.addEventListener('click', () => {
+                        console.log(prodialog.innerHTML);
+                        // 顯示 dialog
+                        showDialog();
+                        // 將被點擊的 div 的內容顯示在 dialog 中
+                        const boxtitle = document.createElement('p');
+                        boxtitle.setAttribute('class', 'boxtitle');
+                        boxtitle.innerHTML = '維修進度' + '<br>' + '<br>';
+
+                        // var prodialog = div.querySelector('.prodialog');
+                        // console.log(prodialog)
+
+                        if (progress[i][0] == "其他"){
+                        fixitem = progress[i][7];
+                    }
+                    else{
+                        fixitem = progress[i][0];
+                    }
+                        const boxitems = `
+                        <p class="dorm" name="dorm">棟別: ${progress[i][1]}</p>
+                        <p class="place" name="place">地點: ${progress[i][2]}</p>
+                        <p class="item" name="item">項目: ${fixitem}</p>
+                        
+                        <p class="number" name="number">床位: ${progress[i][3]}</p>
+                        <p><span class="status" name="time">維修進度: ${progress[i][4]}</span><span class="status" name="status"> - ${progress[i][6]}</span></p>
+                        <p class="explain" status="explain">說明: ${progress[i][5]}</p>
+                    `;
+                        const dialogContent = document.getElementById('dialog_content');
+                        dialogContent.innerHTML = boxtitle.innerHTML + boxitems;
+                    });
+                });
+
+                const closeButton = document.getElementById('close');
+                closeButton.addEventListener('click', () => {
+                    closeDialog();
+                });
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
+
+</script>

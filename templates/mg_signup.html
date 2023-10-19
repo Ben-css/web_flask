@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<link rel="icon" href="{{ url_for('static', filename='favicon.png')}}" type="image/x-icon">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者註冊系統</title>
+    <link rel="stylesheet" href="mg_signup.css" />
+</head>
+<body>
+    <main>
+        <div class="title">
+            <article>
+                實踐大學高雄校區宿舍維修系統
+            </article>
+        </div>
+    <!-- <h2 style="text-align: center;">宿舍維修登入</h2>
+    <div style="text-align: center;">歡迎使用宿舍維修系統</div> -->
+    
+        <form action="/manager_signup" method="post">
+            <h1>管理者註冊</h1>
+            <span>姓名 <input type="text" name="manager_name"/></span><br/>
+            <span>帳號 <input type="text" name="account"/></span><br/>
+            <span>密碼 <input type="password" name="password"/></span><br/>
+            <div><button>&plus; 註冊</button></div><br/>
+            <p><a href="/">回到一般使用者登入</a></p>
+        </form>
+        
+    
+    </main>
+
+</body>
+</html>
