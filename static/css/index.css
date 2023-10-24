@@ -23,6 +23,9 @@
     vertical-align: middle;
     border-radius: 10px 0 0 10px;
 }
+.side-image .logo-image{
+    width: 90%;
+}
 .row{
     width: 900px;
     height: 550px;
