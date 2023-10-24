@@ -21,9 +21,9 @@ db = client.test
 #     dorm = RadioField(
 #         '棟別', choices=[('B1', 'B1'), ('B2', 'B2'), ('H', 'H'), ('M', 'M'), ('N', 'N')])
 #     place = RadioField('地點', choices=[('寢室', '寢室'), ('公共區域', '公共區域')])
-#     fix_subject = RadioField('類別', choices=[('電燈', '電燈'), ('門栓', '門栓'), ('窗戶', '窗戶'), (
+#     fix_items = RadioField('類別', choices=[('電燈', '電燈'), ('門栓', '門栓'), ('窗戶', '窗戶'), (
 #         '鏡子', '鏡子'), ('水龍頭', '水龍頭'), ('洗衣機', '洗衣機'), ('烘衣機', '烘衣機'), ('消防設備', '消防設備'), ('其他', '其他')])
-#     other_fix_subject = TextAreaField('其他維修項目')
+#     other_fix_items = TextAreaField('其他維修項目')
 #     explain = TextAreaField('說明')
 #     submit = SubmitField("確認")
 
@@ -94,7 +94,7 @@ def signin():
     session["student_id"] = result["student_id"]
     session["name"] = result["name"]
     # session["number"] = result["number"]
-    print(session['student_id'])
+    # print(session['student_id'])
     return redirect("/member")
 
 # 會員頁
@@ -104,60 +104,60 @@ def member():
     # 如果student_id在session才能登入
     if "student_id" in session:
         return render_template("member.html",
-                            #    form=form,
-                               name=session.get('name'),
-                               student_id=session.get('student_id'),         
-                               )
+        #    form=form,
+            name=session.get('name'),
+            student_id=session.get('student_id'),         
+            )
     else:
         return redirect("/")
 
 
 # 進度表
-@app.route("/progress")
-def get_progress():
-    # 和資料庫做互動
-    collection = db.forms
+# @app.route("/progress")
+# def get_progress():
+#     # 和資料庫做互動
+#     collection = db.forms
     
-    # 使用者學號&姓名
-    result = collection.find()
+#     # 使用者學號&姓名
+#     result = collection.find()
 
-    # 從資料庫動態抓取資料
-    # itemvalue = []
-    # subtime = []
-    # status = []
-    progress = []
-    len = 0
-    # 從資料庫中抓資料做成list
-    for items in result:
-        if items['student_id'] != session['student_id']:
-            continue
-        len += 1
-        # itemvalue.append(items['fix_subject'])
-        # subtime.append(items['submitime'])
-        # status.append(items['status'])
-        progress.append([
-            items['fix_subject'],
-            items['dorms'],
-            items['place'],
-            items['number'],
-            items['submitime'],
-            items['explain'],
-            items['status'],
-            items['other_fix_subject'],
-            items['progress_explain']])
+#     # 從資料庫動態抓取資料
+#     # itemvalue = []
+#     # subtime = []
+#     # status = []
+#     progress = []
+#     len = 0
+#     # 從資料庫中抓資料做成list
+#     for items in result:
+#         if items['student_id'] != session['student_id']:
+#             continue
+#         len += 1
+#         # itemvalue.append(items['fix_items'])
+#         # subtime.append(items['submitime'])
+#         # status.append(items['status'])
+#         progress.append([
+#             items['fix_items'],
+#             items['dorms'],
+#             items['place'],
+#             items['number'],
+#             items['submitime'],
+#             items['explain'],
+#             items['status'],
+#             items['other_fix_items'],
+#             items['progress_explain']])
     
-    # print(explain)
-    # print(subtime)
-    # print(status)
+#     # print(explain)
+#     # print(subtime)
+#     # print(status)
 
-    # print(progress)
-    # 再把資料轉成json後傳給前端
-    return jsonify(progress)
+#     # print(progress)
+#     # 再把資料轉成json後傳給前端
+#     return jsonify(progress)
 
 
 # 表單驗證、儲存
-@app.route('/forms', methods=['POST'])
-def forms():
+@app.route('/submit_form', methods=['POST'])
+def submit_form():
     # form = MyForm()
 
     twtime = pytz.timezone('Asia/Taipei')
@@ -166,12 +166,12 @@ def forms():
 
     if request.method == "POST":
         student_id = session['student_id']
-        student_name = session['student_name']
+        name = session['name']
         number = session['number']
         dorms = request.form["dorm"]
         place = request.form["place"]
-        fix_subject = request.form["fix_subject"]
-        other_fix_subject = request.form["other_fix_items"]
+        fix_items = request.form["fix_items"]
+        other_fix_items = request.form["other_fix_items"]
         explain = request.form["explain"]
         # 進度說明預設為空
         progress_explain = ""
@@ -179,16 +179,15 @@ def forms():
         print(request.form)
         # print(dorm)
 
-        
         forms = db.forms
         forms.insert_one({
             "student_id": student_id,
-            "student_name": student_name,
+            "name": name,
             "dorms": dorms,
             "number": number,
             "place": place,
-            "fix_subject": fix_subject,
-            "other_fix_subject": other_fix_subject,
+            "fix_items": fix_items,
+            "other_fix_items": other_fix_items,
             "explain": explain,
             "status": "待確認",
             "submitime": submitime,
@@ -214,7 +213,7 @@ def forms():
 
 
 # 管理員登入
-@app.route("/manager_signin_page", methods=["POST", "GET"])
+@app.route("/manager_signin_page", methods=["GET"])
 def manager_signin_page():
     return render_template('mg_signin.html')
 
@@ -293,19 +292,19 @@ def  fix_page():
     # 從資料庫中抓資料做成list
     for items in result:
         len += 1
-        # itemvalue.append(items['fix_subject'])
+        # itemvalue.append(items['fix_items'])
         # subtime.append(items['submitime'])
         # status.append(items['status'])
         fixlist.append([
             items['dorms'],
-            items['student_name'],
-            items['fix_subject'],
+            items['name'],
+            items['fix_items'],
             items['place'],
             items['number'],
             items['status'],
             items['submitime'],
             items['explain'],
-            items['other_fix_subject'],
+            items['other_fix_items'],
             items['progress_explain']])
     
     # print(itemvalue)
@@ -337,7 +336,7 @@ def fixlist_change():
         # result = forms.update_one({
         #     "$and": [
         #     {"submitime": time},
-        #     {"student_name": name},
+        #     {"name": name},
         # ],"$set":{
         #     "status"
         #     }
@@ -356,7 +355,7 @@ def error():
 # 使用者登出
 @app.route("/signout")
 def signout():
-    del session['student_name']
+    del session['name']
     del session['student_id']
     del session["number"]
     return redirect("/")
