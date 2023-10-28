@@ -111,6 +111,20 @@ def member():
     else:
         return redirect("/")
 
+# 表單頁
+@app.route("/form")
+def form():
+    # form = MyForm()
+    # 如果student_id在session才能登入
+    if "student_id" in session:
+        return render_template("form.html",
+        #    form=form,
+            name=session.get('name'),
+            student_id=session.get('student_id'),         
+            )
+    else:
+        return redirect("/")
+
 
 # 進度表
 # @app.route("/progress")
