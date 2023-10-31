@@ -35,6 +35,7 @@ app = Flask(
 )
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+# 設定session key
 app.secret_key = "Hello World"
 
 # 首頁
@@ -95,7 +96,7 @@ def signin():
     session["name"] = result["name"]
     # session["number"] = result["number"]
     # print(session['student_id'])
-    return redirect("/member")
+    return redirect("/form")
 
 # 會員頁
 @app.route("/member")
@@ -112,18 +113,27 @@ def member():
         return redirect("/")
 
 # 表單頁
-@app.route("/form")
+@app.route("/form",methods=["GET"])
 def form():
     # form = MyForm()
     # 如果student_id在session才能登入
     if "student_id" in session:
+        student_id=session.get('student_id')
+        collection = db.forms
+        form_list =  list(collection.find({"student_id": student_id}).sort("submit_at", pymongo.DESCENDING))
+        
+        for student in form_list:
+            student["_id"] = str(student["_id"])
+
+        # print(form_list)
         return render_template("form.html",
         #    form=form,
             name=session.get('name'),
-            student_id=session.get('student_id'),         
+            student_id=session.get('student_id'),
+            form_list=form_list
             )
     else:
-        return redirect("/")
+        return redirect("/error?msg=未進行登入，請先登入")
 
 
 # 進度表
@@ -147,14 +157,14 @@ def form():
 #             continue
 #         len += 1
 #         # itemvalue.append(items['fix_items'])
-#         # subtime.append(items['submitime'])
+#         # subtime.append(items['submit_at'])
 #         # status.append(items['status'])
 #         progress.append([
 #             items['fix_items'],
 #             items['dorms'],
 #             items['place'],
 #             items['number'],
-#             items['submitime'],
+#             items['submit_at'],
 #             items['explain'],
 #             items['status'],
 #             items['other_fix_items'],
@@ -170,41 +180,51 @@ def form():
 
 
 # 表單驗證、儲存
-@app.route('/submit_form', methods=['POST'])
+@app.route('/submit_form',methods=["POST"])
 def submit_form():
     # form = MyForm()
 
     twtime = pytz.timezone('Asia/Taipei')
     twtime = datetime.now(twtime)
-    submitime = twtime.strftime("%Y.%m.%d %H:%M:%S")
+    submit_at = twtime.strftime("%Y.%m.%d %H:%M")
 
     if request.method == "POST":
         student_id = session['student_id']
         name = session['name']
-        number = session['number']
+        # number = session['number']
         dorms = request.form["dorm"]
-        place = request.form["place"]
+        location = request.form["location"]
         fix_items = request.form["fix_items"]
         other_fix_items = request.form["other_fix_items"]
-        explain = request.form["explain"]
+        fix_explain = request.form["fix_explain"]
         # 進度說明預設為空
         progress_explain = ""
 
-        print(request.form)
+        # print(request.form)
         # print(dorm)
 
         forms = db.forms
+        # default_values = {
+        #     "dorms": "未提供",
+        #     "number": 0,
+        #     "location": "未提供",
+        #     "fix_items": "未提供",
+        #     "other_fix_items": "未提供",
+        #     "fix_explain": "未提供",
+        #     "status": "待確認",
+        #     "progress_explain": "未提供"
+        # }
         forms.insert_one({
             "student_id": student_id,
             "name": name,
-            "dorms": dorms,
-            "number": number,
-            "place": place,
+            # "dorms": dorms,
+            # "number": number,
+            "location": location,
             "fix_items": fix_items,
             "other_fix_items": other_fix_items,
-            "explain": explain,
+            "fix_explain": fix_explain,
             "status": "待確認",
-            "submitime": submitime,
+            "submit_at": submit_at,
             "progress_explain": progress_explain
         })
         # 不需要==
@@ -223,7 +243,8 @@ def submit_form():
 
     # 記得重新導向回/member !!
     # 不然用render_template("/member",form=form)會被導到/forms
-    return redirect(url_for('member'))
+    return redirect('/form')
+# redirect(url_for('member'))
 
 
 # 管理員登入
@@ -307,7 +328,7 @@ def  fix_page():
     for items in result:
         len += 1
         # itemvalue.append(items['fix_items'])
-        # subtime.append(items['submitime'])
+        # subtime.append(items['submit_at'])
         # status.append(items['status'])
         fixlist.append([
             items['dorms'],
@@ -316,7 +337,7 @@ def  fix_page():
             items['place'],
             items['number'],
             items['status'],
-            items['submitime'],
+            items['submit_at'],
             items['explain'],
             items['other_fix_items'],
             items['progress_explain']])
@@ -334,7 +355,7 @@ def  fix_page():
 def fixlist_change():
     twtime = pytz.timezone('Asia/Taipei')
     twtime = datetime.now(twtime)
-    changetime = twtime.strftime("%Y.%m.%d %H:%M:%S")
+    changetime = twtime.strftime("%Y.%m.%d %H:%M")
 
     if request.method == "POST":
         time = request.form["status"]
@@ -349,7 +370,7 @@ def fixlist_change():
         # 找到要修改的fixform
         # result = forms.update_one({
         #     "$and": [
-        #     {"submitime": time},
+        #     {"submit_at": time},
         #     {"name": name},
         # ],"$set":{
         #     "status"
@@ -371,7 +392,7 @@ def error():
 def signout():
     del session['name']
     del session['student_id']
-    del session["number"]
+    # del session["number"]
     return redirect("/")
 
 @app.route("/manager_signout")
