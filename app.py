@@ -250,7 +250,7 @@ def submit_form():
 # 管理員登入
 @app.route("/manager_signin_page", methods=["GET"])
 def manager_signin_page():
-    return render_template('mg_signin.html')
+    return render_template('manager_login.html')
 
 
 @app.route("/manager_signin", methods=["POST"])
