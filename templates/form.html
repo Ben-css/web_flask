@@ -105,57 +105,46 @@
             <form action="/submit_form" method="post">
                 <div class="row md-3">
                     <label class="col-md-2 col-form-label">提交人資料</label>
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <label for="studentId" class="form-label">學號</label>
                         <input type="text" class="form-control" id="studentId" value="{{ student_id }}" disabled>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <label for="name" class="form-label">姓名</label>
                         <input type="text" class="form-control" id="name" value="{{ name }}" disabled>
                     </div>
                 </div>
-                <fieldset class="row mb-3">
-                    <legend class="col-form-label col-sm-2 pt-0">棟別</legend>
-                    <div class="col-sm-8">
-                        <div class="form-check-inline">
-                            <input class="form-check-input" type="radio" name="dorm" id="dorm_1" value="B1">
-                            <label class="form-check-label" for="dorm_1">B1</label>
-                        </div>
-                        <div class="form-check-inline">
-                            <input class="form-check-input" type="radio" name="dorm" id="dorm_2" value="B2">
-                            <label class="form-check-label" for="dorm_2">B2</label>
-                        </div>
-                        <div class="form-check-inline">
-                            <input class="form-check-input" type="radio" name="dorm" id="dorm_3" value="H">
-                            <label class="form-check-label" for="dorm_3">H</label>
-                        </div>
-                        <div class="form-check-inline">
-                            <input class="form-check-input" type="radio" name="dorm" id="dorm_4" value="M">
-                            <label class="form-check-label" for="dorm_4">M</label>
-                        </div>
-                        <div class="form-check-inline">
-                            <input class="form-check-input" type="radio" name="dorm" id="dorm_5" value="N">
-                            <label class="form-check-label" for="dorm_5">N</label>
-                        </div>
+                <div class="row mb-3">
+                    <label class="col-md-2 col-form-label">地點</label>
+                    <div class="col-md-3">
+                        <input class="form-check-input" type="radio" name="location" id="inroom" value="寢室" required>
+                        <label class="form-check-label" for="inroom">寢室</label>
                     </div>
-                </fieldset>
-                <fieldset class="row mb-3">
-                    <legend class="col-form-label col-sm-2 pt-0">地點</legend>
-                    <div class="col-sm-10">
-                        <div class="col form-check">
-                            <input class="form-check-input" type="radio" name="location" id="inroom" value="寢室" required>
-                            <label class="form-check-label" for="inroom">寢室</label>
-                        </div>
-                        <div class="col form-check">
-                            <input class="form-check-input" type="radio" name="location" id="public" value="公共區域" required>
-                            <label class="form-check-label" for="public">公共區域</label>
-                        </div>
-                        <div class="col form-check">
-                            <label for="exampleFormControlInput1" class="form-label">詳細地點</label>
-                            <input type="text" name="location_detail" class="form-control" id="exampleFormControlInput1" placeholder="房號或地點，盡量詳細">
-                        </div>
+                    <div class="col-md-3">
+                        <label for="studentId" class="form-label">棟別</label>
+                        <select class="form-select" name="fix_items" aria-label="Default select example">
+                            <option selected>請選擇棟別</option>
+                            <option value="">B1</option>
+                            <option value="">B2</option>
+                            <option value="">H</option>
+                            <option value="">M</option>
+                            <option value="">N</option>
+                        </select>
                     </div>
-                </fieldset>
+                    <div class="col-md-3">
+                        <label for="studentId" class="form-label">房號</label>
+                        <input type="text" class="form-control" id="studentId" value="">
+                    </div>
+                    <legend class="col-form-label col-sm-2 pt-0"></legend>
+                    <div class="col-md-3">
+                        <input class="form-check-input" type="radio" name="location" id="inroom" value="寢室" required>
+                        <label class="form-check-label" for="inroom">寢室</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleFormControlInput1" class="form-label">詳細地點</label>
+                        <input type="text" name="location_detail" class="form-control" id="exampleFormControlInput1" placeholder="房號或地點，盡量詳細">
+                    </div>
+                </div>
                 <fieldset class="row mb-3">
                     <legend class="col-form-label col-sm-2 pt-0">維修項目</legend> 
                     <div class="col-sm-10">
