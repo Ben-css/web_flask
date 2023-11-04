@@ -137,46 +137,47 @@ def form():
 
 
 # 進度表
-# @app.route("/progress")
-# def get_progress():
-#     # 和資料庫做互動
-#     collection = db.forms
+@app.route("/tesk_info")
+def get_progress():
+        return render_template("tesk_info.html")
+    # # 和資料庫做互動
+    # collection = db.forms
     
-#     # 使用者學號&姓名
-#     result = collection.find()
+    # # 使用者學號&姓名
+    # result = collection.find()
 
-#     # 從資料庫動態抓取資料
-#     # itemvalue = []
-#     # subtime = []
-#     # status = []
-#     progress = []
-#     len = 0
-#     # 從資料庫中抓資料做成list
-#     for items in result:
-#         if items['student_id'] != session['student_id']:
-#             continue
-#         len += 1
-#         # itemvalue.append(items['fix_items'])
-#         # subtime.append(items['submit_at'])
-#         # status.append(items['status'])
-#         progress.append([
-#             items['fix_items'],
-#             items['dorms'],
-#             items['place'],
-#             items['number'],
-#             items['submit_at'],
-#             items['explain'],
-#             items['status'],
-#             items['other_fix_items'],
-#             items['progress_explain']])
+    # # 從資料庫動態抓取資料
+    # # itemvalue = []
+    # # subtime = []
+    # # status = []
+    # progress = []
+    # len = 0
+    # # 從資料庫中抓資料做成list
+    # for items in result:
+    #     if items['student_id'] != session['student_id']:
+    #         continue
+    #     len += 1
+    #     # itemvalue.append(items['fix_items'])
+    #     # subtime.append(items['submit_at'])
+    #     # status.append(items['status'])
+    #     progress.append([
+    #         items['fix_items'],
+    #         items['dorms'],
+    #         items['place'],
+    #         items['number'],
+    #         items['submit_at'],
+    #         items['explain'],
+    #         items['status'],
+    #         items['other_fix_items'],
+    #         items['progress_explain']])
     
-#     # print(explain)
-#     # print(subtime)
-#     # print(status)
+    # # print(explain)
+    # # print(subtime)
+    # # print(status)
 
-#     # print(progress)
-#     # 再把資料轉成json後傳給前端
-#     return jsonify(progress)
+    # # print(progress)
+    # # 再把資料轉成json後傳給前端
+    # return jsonify(progress)
 
 
 # 表單驗證、儲存
