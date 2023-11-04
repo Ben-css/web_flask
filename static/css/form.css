@@ -59,3 +59,40 @@ footer{
 .col-form-label {
     font-weight: bold;
 }
+
+.progress-line {
+    align-items: center;
+    cursor: pointer;
+    margin: 0 calc(1* 1.5em); 
+}
+
+.step {
+    padding: 16px;
+    margin-top: 12px;
+
+}
+
+.line {
+    width: 5%;
+    height: 3px;
+    border-radius: 4px;
+    background: lightgrey;
+    transition: background 0.5s linear;
+}
+
+svg {
+    height: 48px;
+    margin-bottom: 16px;
+    margin-right: 24px;
+}
+
+.active{
+    fill: #376ecd;
+}
+
+/* 'sm' applies to x-small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+    .step {
+        display: flex;
+    }
+}
