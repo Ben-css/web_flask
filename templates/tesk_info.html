@@ -20,7 +20,7 @@
     <header>
         <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="#"><img src="dorm_logo.png" height="36"></a>
+                <a class="navbar-brand" href="/form"><img src="dorm_logo.png" height="36"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -87,74 +87,30 @@
     <section id="report">
         <div class="container px-3">
             <h2>表單紀錄</h2>
-            
-            <div class="row md-3">
-                <label class="col-md-2 col-form-label">提交人資料</label>
-                <div class="col-md-5">
-                    <label for="studentId" class="form-label">學號</label>
-                    <p class="form-control">A109510388</p>
-                </div>
-                <div class="col-md-5">
-                    <label for="name" class="form-label">姓名</label>
-                    <p class="form-control">陳柏安</p>
-                </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">提交者學號</span></div>
+                <div class="col-6">A109510388</div>
             </div>
-            <div class="row mb-3">
-                <label class="col-md-2 col-form-label">地點</label>
-                <div class="col-md-10">
-                    <p class="form-control">寢室 N 205</p>
-                </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">提交者姓名</span></div>
+                <div class="col-6">陳柏安</div>
             </div>
-            <fieldset class="row mb-3">
-                <legend class="col-form-label col-sm-2 pt-0">維修項目</legend> 
-                <div class="col-sm-10">
-                    <div class="form-check">
-                        <label for="item-list" class="form-label">維修物列表</label>
-                        <select class="form-select" name="fix_items" aria-label="Default select example">
-                            <option selected>請選擇項目</option>
-                            <!-- <option value="水電">水電</option>
-                            <option value="一般維修項目">一般維修項目</option>
-                            <option value="網路">網路</option> -->
-                            <optgroup label="水電">
-                                <option value="電燈">電燈</option>
-                                <option value="插座">插座</option>
-                                <option value="馬桶">馬桶</option>
-                            </optgroup>
-                            <optgroup label="一般維修項目">
-                                <option value="門把">門把</option>
-                                <option value="桌椅">桌椅</option>
-                                <option value="衣櫃">衣櫃</option>
-                            </optgroup>
-                            <optgroup label="網路">
-                                <option value="網路接口ˇ">網路接口</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <br>
-                    <div class="mb-3 form-check">
-                        <label for="item-text" class="form-label">未列出的維修項目</label>
-                        <input type="text" name="other_fix_items" class="form-control" id="item-text" placeholder="未列出的維修項目">
-                    </div>
-                </div>
-            </fieldset>
-            <div class="row mb-3">
-                <label for="fix_explain" class="col-sm-2 col-form-label">情況說明</label>
-                <div class="col-sm-10">
-                    <input type="txet" name="fix_explain" class="form-control" id="fix_explain">
-                </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">地點</span></div>
+                <div class="col-6">寢室 N202</div>
             </div>
-            <div class="row mb-3">
-                <label for="photo" class="col-sm-2 col-form-label">照片上傳</label>
-                <div class="col-sm-10">
-                    <input type="file" name="image" accept="image/*" class="form-control" id="inputGroupFile01">
-                </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">維修項目</span></div>
+                <div class="col-6">門把</div>
             </div>
-            <div class="row justify-content-md-center">
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">提交</button>
-                    <button type="reset" class="btn btn-secondary">重製</button>
-                    <!-- <input type="submit" class="btn btn-primary"> -->
-                    <!-- <input type="reset" class="btn btn-secondary"> -->
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">情況說明</span></div>
+                <div class="col-6">轉起來卡卡的</div>
+            </div>
+            <div class="row justify-content-center p-2">
+                <div class="col-3 text-end"><span class="col-form-label">照片</span></div>
+                <div class="col-6">
+                    <img class="img-fluid" src="img/000.jpg">
                 </div>
             </div>
 
