@@ -179,6 +179,12 @@ def get_progress():
     # # 再把資料轉成json後傳給前端
     # return jsonify(progress)
 
+#公告頁
+#僅供測試使用，你可以搬到自己喜歡的地方
+@app.route("/announcement")
+def get_announcement():
+    return render_template("announcement.html")
+
 
 # 表單驗證、儲存
 @app.route('/submit_form',methods=["POST"])
