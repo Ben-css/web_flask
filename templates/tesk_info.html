@@ -20,7 +20,7 @@
     <header>
         <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="/form"><img src="dorm_logo.png" height="36"></a>
+                <a class="navbar-brand" href="/form"><img src="{{ url_for('static', filename='dorm_logo.png') }}" height="36"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -110,7 +110,7 @@
             <div class="row justify-content-center p-2">
                 <div class="col-3 text-end"><span class="col-form-label">照片</span></div>
                 <div class="col-6">
-                    <img class="img-fluid" src="img/000.jpg">
+                    <img class="img-fluid" src="{{ url_for('static', filename='img/000.jpg') }}">
                 </div>
             </div>
 
@@ -121,7 +121,7 @@
             <p class="col-md-4 mb-0 text-body-secondary">&copy; 2023 Team dorm-life</p>
         
             <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                <img class="bi me-2" height="36" src="dorm_logo_black.png">
+                <img class="bi me-2" height="36" src="{{ url_for('static', filename='dorm_logo_black.png') }}">
             </a>
         
             <ul class="nav col-md-4 justify-content-end">

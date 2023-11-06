@@ -42,16 +42,18 @@
             <h2>公告</h2>
             <div class="d-flex flex-column flex-md-row p-4 gap-4 align-items-center justify-content-center">
                 <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                        <div class="d-flex gap-2 w-100 justify-content-between">
-                            <div>
-                                <h6 class="mb-0">宿舍將在1/25關閉</h6>
-                                <p class="mb-0 opacity-75">各位住宿生好，112學年度的第一學期即將結束</p>
+                    {% for announcements in announcements %}
+                        <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                            <div class="d-flex gap-2 w-100 justify-content-between">
+                                <div>
+                                    <h6 class="mb-0">{{ announcements.title }}</h6>
+                                    <p class="mb-0 opacity-75">{{ announcements.content }}</p>
+                                </div>
+                                <small class="opacity-50 text-nowrap">{{ announcements.created_at }}</small>
                             </div>
-                            <small class="opacity-50 text-nowrap">now</small>
-                        </div>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                        </a>
+                    {% endfor %}
+                    <!-- <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
                         <div class="d-flex gap-2 w-100 justify-content-between">
                             <div>
                                 <h6 class="mb-0">配合H棟宿舍整建搬遷床位公告</h6>
@@ -67,7 +69,7 @@
                                 <p class="mb-0 opacity-75">more...</p>
                             </div>
                         </div>
-                    </a>
+                    </a> -->
                 </div>
             </div>
         </div>
@@ -83,7 +85,7 @@
                             <legend class="card-title">{{ progress.fix_items }}</legend>
                             <h6 class="card-subtitle mb-2 text-muted">{{ progress.status }}</h6>
                             <p class="card-text">提交時間:{{ progress.submit_at }}<br>最後更新時間:2023/05/10 20:57:53</p>
-                            <a href="#" class="btn btn-primary">詳情</a>
+                            <a href="/tesk_info/{{ progress["_id"] }}" class="btn btn-primary">詳情</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -122,13 +124,13 @@
                     </div>
                     <div class="col-md-3">
                         <label for="studentId" class="form-label">棟別</label>
-                        <select class="form-select" name="fix_items" aria-label="Default select example">
+                        <select class="form-select" name="dorms" aria-label="Default select example">
                             <option selected>請選擇棟別</option>
-                            <option value="">B1</option>
-                            <option value="">B2</option>
-                            <option value="">H</option>
-                            <option value="">M</option>
-                            <option value="">N</option>
+                            <option value="B1">B1</option>
+                            <option value="B2">B2</option>
+                            <option value="H">H</option>
+                            <option value="M">M</option>
+                            <option value="N">N</option>
                         </select>
                     </div>
                     <div class="col-md-3">
