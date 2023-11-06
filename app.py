@@ -10,6 +10,7 @@ from wtforms import (StringField, BooleanField, DateTimeField,
 from wtforms.validators import DataRequired
 import pytz
 import json
+from bson import ObjectId
 
 
 client = pymongo.MongoClient(
@@ -111,6 +112,29 @@ def member():
             )
     else:
         return redirect("/")
+    
+# 公告
+# @app.route("/announcement",methods=["GET"])
+# def announcement():
+#     # form = MyForm()
+#     # 如果student_id在session才能登入
+#     if "student_id" in session:
+#         student_id=session.get('student_id')
+#         collection = db.forms
+#         form_list =  list(collection.find({"student_id": student_id}).sort("submit_at", pymongo.DESCENDING))
+        
+#         for student in form_list:
+#             student["_id"] = str(student["_id"])
+
+#         # print(form_list)
+#         return render_template("form.html",
+#         #    form=form,
+#             name=session.get('name'),
+#             student_id=session.get('student_id'),
+#             form_list=form_list
+#             )
+#     else:
+#         return redirect("/error?msg=未進行登入，請先登入")
 
 # 表單頁
 @app.route("/form",methods=["GET"])
@@ -120,26 +144,60 @@ def form():
     if "student_id" in session:
         student_id=session.get('student_id')
         collection = db.forms
+        announcements = db.announcements
         form_list =  list(collection.find({"student_id": student_id}).sort("submit_at", pymongo.DESCENDING))
         
         for student in form_list:
             student["_id"] = str(student["_id"])
+
+        # 將_id轉成str
+        announcements_list = announcements.find().sort("created_at", pymongo.DESCENDING)
+        # for anc in announcements_list:
+        #     anc["_id"] = str(anc["_id"])
 
         # print(form_list)
         return render_template("form.html",
         #    form=form,
             name=session.get('name'),
             student_id=session.get('student_id'),
-            form_list=form_list
+            form_list=form_list,
+            announcements = announcements_list
             )
     else:
         return redirect("/error?msg=未進行登入，請先登入")
 
 
 # 進度表
-@app.route("/tesk_info")
-def get_progress():
-        return render_template("tesk_info.html")
+@app.route("/tesk_info/<form_id>")
+def get_progress(form_id):
+    
+    student_id=session.get('student_id')
+
+    collection = db.forms
+    form_list =  list(collection.find({"student_id": student_id}).sort("submit_at", pymongo.DESCENDING))
+    form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
+    # form = collection.find_one({"_id": form_id, "student_id": student_id})
+    # print(bool(collection.find_one({"_id": form_id})))
+    print(type(collection["_id"]))
+    print(form_id)
+    # for student in form_list:
+    #     student["_id"] = str(student["_id"])
+
+    # footer_img = 'dorm_logo_black.png'
+
+    if form:
+        return render_template("tesk_info.html",
+                                form_list=form_list,
+                                name=session.get('name'),
+                                student_id=session.get('student_id'),
+                                form=form,
+                                
+                        )
+    else:
+        # 如果沒找到相應的資料，可以處理錯誤或重定向到其他頁面
+        return "找不到相應的資料", 404
+
+
     # # 和資料庫做互動
     # collection = db.forms
     
@@ -193,7 +251,7 @@ def submit_form():
         student_id = session['student_id']
         name = session['name']
         # number = session['number']
-        dorms = request.form["dorm"]
+        # dorms = request.form["dorm"]
         location = request.form["location"]
         fix_items = request.form["fix_items"]
         other_fix_items = request.form["other_fix_items"]
@@ -204,17 +262,16 @@ def submit_form():
         # print(request.form)
         # print(dorm)
 
+        # announcements = db.announcements
+        # announcements.insert_one({
+        #     "title": '你好',
+        #     "content": '你好??',
+        #     "creater": '東科',
+        #     "created_at": submit_at,
+        #     "updated_at": submit_at,
+        # })
+
         forms = db.forms
-        # default_values = {
-        #     "dorms": "未提供",
-        #     "number": 0,
-        #     "location": "未提供",
-        #     "fix_items": "未提供",
-        #     "other_fix_items": "未提供",
-        #     "fix_explain": "未提供",
-        #     "status": "待確認",
-        #     "progress_explain": "未提供"
-        # }
         forms.insert_one({
             "student_id": student_id,
             "name": name,
