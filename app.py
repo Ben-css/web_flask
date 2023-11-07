@@ -178,8 +178,8 @@ def get_progress(form_id):
     form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
     # form = collection.find_one({"_id": form_id, "student_id": student_id})
     # print(bool(collection.find_one({"_id": form_id})))
-    print(type(collection["_id"]))
-    print(form_id)
+    # print(type(collection["_id"]))
+    print(form)
     # for student in form_list:
     #     student["_id"] = str(student["_id"])
 
@@ -190,8 +190,7 @@ def get_progress(form_id):
                                 form_list=form_list,
                                 name=session.get('name'),
                                 student_id=session.get('student_id'),
-                                form=form,
-                                
+                                form=form,                      
                         )
     else:
         # 如果沒找到相應的資料，可以處理錯誤或重定向到其他頁面
@@ -331,12 +330,14 @@ def manager_signin():
         ]
     })
 
-    # 登入失敗，到錯誤頁面
-    if result == None:
-        return redirect("/error?msg=帳號或密碼輸入錯誤")
+    # # 登入失敗，到錯誤頁面
+    # if result == None:
+    #     return redirect("/error?msg=帳號或密碼輸入錯誤")
     # 登入成功，在 session 紀錄會員資訊，到會員頁面
-    session["account"] = result["account"]
-    session["manager_name"] = result["manager_name"]
+    session["account"] = 'a12345678'
+    # result["account"]
+    session["manager_name"] = '可莉玩家'
+    # result["manager_name"]
     print(session['account'])
     return render_template('manager_page.html')
 
