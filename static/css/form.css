@@ -80,6 +80,12 @@ footer{
     transition: background 0.5s linear;
 }
 
+.image {
+    width: 90%;
+    height: auto;
+    border-radius: 3vw;
+}
+
 svg {
     height: 48px;
     margin-bottom: 16px;
