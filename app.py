@@ -114,27 +114,28 @@ def member():
         return redirect("/")
     
 # 公告
-# @app.route("/announcement",methods=["GET"])
-# def announcement():
-#     # form = MyForm()
-#     # 如果student_id在session才能登入
-#     if "student_id" in session:
-#         student_id=session.get('student_id')
-#         collection = db.forms
-#         form_list =  list(collection.find({"student_id": student_id}).sort("submit_at", pymongo.DESCENDING))
-        
-#         for student in form_list:
-#             student["_id"] = str(student["_id"])
+@app.route("/announcement/<_id>",methods=["GET"])
+def announcement(_id):
+    # form = MyForm()
+    if "student_id" in session:
+        # student_id=session.get('student_id')
+        collection = db.announcements
+        _id = ObjectId(_id)
+        announcement = collection.find_one({"_id": _id})
+        # print(bool(collection.find_one({"_id": _id})))
+        # print(type(_id))
+        # for student in form_list:
+        #     student["_id"] = str(student["_id"])
 
-#         # print(form_list)
-#         return render_template("form.html",
-#         #    form=form,
-#             name=session.get('name'),
-#             student_id=session.get('student_id'),
-#             form_list=form_list
-#             )
-#     else:
-#         return redirect("/error?msg=未進行登入，請先登入")
+        # print(form_list)
+        return render_template("/announcement.html",
+        #    form=form,
+            name=session.get('name'),
+            student_id=session.get('student_id'),
+            announcement = announcement,
+            )
+    else:
+        return redirect("/error?msg=未進行登入，請先登入")
 
 # 表單頁
 @app.route("/form",methods=["GET"])
@@ -236,12 +237,6 @@ def get_progress(form_id):
     # # 再把資料轉成json後傳給前端
     # return jsonify(progress)
 
-#公告頁
-#僅供測試使用，你可以搬到自己喜歡的地方
-@app.route("/announcement")
-def get_announcement():
-    return render_template("announcement.html")
-
 
 # 表單驗證、儲存
 @app.route('/submit_form',methods=["POST"])
@@ -338,9 +333,21 @@ def manager_signin():
     # result["account"]
     session["manager_name"] = '可莉玩家'
     # result["manager_name"]
-    print(session['account'])
-    return render_template('manager_page.html')
+    # print(session['account'])
+    return redirect("/manager_page")
 
+@app.route("/manager_page",methods=['GET'])
+def manager_page():
+    # collection = db.managers
+    # result = collection.find_one({
+    #     "$and": [
+    #         {"account":  session["account"]},
+    #         {"password": session["manager_name"]},
+    #     ]
+    # })
+    # if result == None:
+    #     return redirect("/error?msg=未進行登入，請登入")
+    return render_template('manager_page.html')
 
 
 # 管理員註冊
@@ -367,7 +374,7 @@ def manager_signup():
 
 @app.route("/manager_signup_page", methods=["POST"])
 def manager_signup_page():
-    return render_template('mg_signup.html')
+    return render_template('manager_signup.html')
 
 
 
@@ -396,21 +403,21 @@ def  fix_page():
         # subtime.append(items['submit_at'])
         # status.append(items['status'])
         fixlist.append([
-            items['dorms'],
+            # items['dorms'],
             items['name'],
             items['fix_items'],
-            items['place'],
-            items['number'],
+            items['location'],
+            # items['number'],
             items['status'],
             items['submit_at'],
-            items['explain'],
+            items['fix_explain'],
             items['other_fix_items'],
             items['progress_explain']])
     
     # print(itemvalue)
     # print(subtime)
     # print(status)
-    print(fixlist)
+    # print(fixlist)
     # 再把資料轉成json後傳給前端
     return jsonify(fixlist)
 
