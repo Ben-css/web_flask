@@ -180,7 +180,7 @@ def get_progress(form_id):
     # form = collection.find_one({"_id": form_id, "student_id": student_id})
     # print(bool(collection.find_one({"_id": form_id})))
     # print(type(collection["_id"]))
-    print(form)
+    # print(form)
     # for student in form_list:
     #     student["_id"] = str(student["_id"])
 
@@ -247,6 +247,15 @@ def submit_form():
     twtime = datetime.now(twtime)
     submit_at = twtime.strftime("%Y.%m.%d %H:%M")
 
+    # result = collection.find_one({
+    #         "$and": [
+    #             {"student_id": student_id},
+    #             {"password": password},
+    #         ]
+    #     })
+
+    #     # 登入失敗，到錯誤頁面
+    #     if result == None:
     if request.method == "POST":
         student_id = session['student_id']
         name = session['name']
@@ -254,8 +263,9 @@ def submit_form():
         # dorms = request.form["dorm"]
         location = request.form["location"]
         fix_items = request.form["fix_items"]
-        other_fix_items = request.form["other_fix_items"]
+        other_fix_items = request.form.get("other_fix_items",'')
         fix_explain = request.form["fix_explain"]
+        print(request.form.get("other_fix_items"))
         # 進度說明預設為空
         progress_explain = ""
 
