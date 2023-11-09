@@ -56,6 +56,14 @@ footer{
     cursor: pointer; /* Add a pointer on hover */
 }
 
+.location-section {
+    display: none;
+}
+
+.location-section.active {
+    display: contents;
+}
+
 .col-form-label {
     font-weight: bold;
 }

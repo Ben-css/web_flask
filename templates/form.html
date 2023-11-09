@@ -53,15 +53,7 @@
                             </div>
                         </a>
                     {% endfor %}
-                    <!-- <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                        <div class="d-flex gap-2 w-100 justify-content-between">
-                            <div>
-                                <h6 class="mb-0">配合H棟宿舍整建搬遷床位公告</h6>
-                                <p class="mb-0 opacity-75">為配合H棟宿舍整建，搬遷床位，請同學協助合於112年1月9日 宿舍關閉前，將個人行李整理裝箱後搬至分配床位</p>
-                            </div>
-                            <small class="opacity-50 text-nowrap">3d</small>
-                        </div>
-                    </a>
+                    <!-- 需要製作公告總覽 -->
                     <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
                         <div class="d-flex gap-2 w-100 justify-content-between">
                             <div>
@@ -69,7 +61,7 @@
                                 <p class="mb-0 opacity-75">more...</p>
                             </div>
                         </div>
-                    </a> -->
+                    </a>
                 </div>
             </div>
         </div>
@@ -113,44 +105,54 @@
             <form action="/submit_form" method="post">
                 <div class="row md-3">
                     <label class="col-md-2 col-form-label">提交人資料</label>
-                    <div class="col-md-5">
-                        <label for="studentId" class="form-label">學號</label>
-                        <input type="text" class="form-control" id="studentId" value="{{ student_id }}" disabled>
-                    </div>
-                    <div class="col-md-5">
-                        <label for="name" class="form-label">姓名</label>
-                        <input type="text" class="form-control" id="name" value="{{ name }}" disabled>
-                    </div>
+                    <div class="col-md-10">
+                        <div class="row">
+                             <div class="col-md-6">
+                                <label for="studentId" class="form-label">學號</label>
+                                <input type="text" class="form-control" id="studentId" value="{{ student_id }}" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">姓名</label>
+                                <input type="text" class="form-control" id="name" value="{{ name }}" disabled>
+                            </div>
+                        </div>
+                    </div> 
                 </div>
                 <div class="row mb-3">
                     <label class="col-md-2 col-form-label">地點</label>
-                    <div class="col-md-3">
-                        <input class="form-check-input" type="radio" name="location" id="inroom" value="寢室" required>
-                        <label class="form-check-label" for="inroom">寢室</label>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="studentId" class="form-label">棟別</label>
-                        <select class="form-select" name="dorms" aria-label="Default select example">
-                            <option value="">請選擇棟別</option>
-                            <option value="B1">B1</option>
-                            <option value="B2">B2</option>
-                            <option value="H">H</option>
-                            <option value="M">M</option>
-                            <option value="N">N</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="studentId" class="form-label">房號</label>
-                        <input type="text" class="form-control" id="studentId" value="">
-                    </div>
-                    <legend class="col-form-label col-sm-2 pt-0"></legend>
-                    <div class="col-md-3">
-                        <input class="form-check-input" type="radio" name="location" id="inroom" value="寢室" required>
-                        <label class="form-check-label" for="inroom">公共區域</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">詳細地點</label>
-                        <input type="text" name="location_detail" class="form-control" id="exampleFormControlInput1" placeholder="請盡量準確的描述">
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-auto">
+                                <input class="form-check-input" type="radio" name="location" id="inroom" value="寢室" required>
+                                <label class="form-check-label" for="inroom">寢室</label>
+                                <br>
+                                <input class="form-check-input" type="radio" name="location" id="inroom" value="寢室" required>
+                                <label class="form-check-label" for="inroom">公共區域</label>
+                            </div>
+                            <div class="col-md-10 location-section active">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="studentId" class="form-label">棟別</label>
+                                        <select class="form-select" name="dorms" aria-label="Default select example">
+                                            <option value="">請選擇棟別</option>
+                                            <option value="B1">B1</option>
+                                            <option value="B2">B2</option>
+                                            <option value="H">H</option>
+                                            <option value="M">M</option>
+                                            <option value="N">N</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="studentId" class="form-label">房號</label>
+                                        <input type="text" class="form-control" id="studentId" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 location-section">
+                                <label for="exampleFormControlInput1" class="form-label">詳細地點</label>
+                                <input type="text" name="location_detail" class="form-control" id="exampleFormControlInput1" placeholder="請盡量準確的描述">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <fieldset class="row mb-3">
@@ -238,15 +240,10 @@
             itemTextInput.required = false;
             itemTextInput.value = "";
         }
-        });
-    });
 
-        // function on() {
-        //     document.getElementById("progress-detail").style.display = "block";
-        // }
-        // function off() {
-        //     document.getElementById("progress-detail").style.display = "none";
-        // }
+        function room_public_selecter() {
+            
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 </body>
