@@ -359,6 +359,19 @@ def manager_page():
     #     return redirect("/error?msg=未進行登入，請登入")
     return render_template('manager_page.html')
 
+@app.route("/manager_tesk",methods=['GET'])
+def manager_tesk():
+    # collection = db.managers
+    # result = collection.find_one({
+    #     "$and": [
+    #         {"account":  session["account"]},
+    #         {"password": session["manager_name"]},
+    #     ]
+    # })
+    # if result == None:
+    #     return redirect("/error?msg=未進行登入，請登入")
+    return render_template('manager_tesk.html')
+
 
 # 管理員註冊
 @app.route("/manager_signup", methods=["POST"])
