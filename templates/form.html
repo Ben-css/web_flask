@@ -20,7 +20,7 @@
     <header>
         <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="#"><img src="dorm_logo.png" height="36"></a>
+                <a class="navbar-brand" href="/form"><img src="dorm_logo.png" height="36"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -102,7 +102,7 @@
     <section id="report">
         <div class="container px-3">
             <h2>維修表單</h2>
-            <form action="/submit_form" method="post">
+            <form action="/submit_form" method="post" enctype="multipart/form-data">
                 <div class="row md-3">
                     <label class="col-md-2 col-form-label">提交人資料</label>
                     <div class="col-md-10">
@@ -240,7 +240,8 @@
             itemTextInput.required = false;
             itemTextInput.value = "";
         }
-
+        });
+    });
         function room_public_selecter() {
             
         }
