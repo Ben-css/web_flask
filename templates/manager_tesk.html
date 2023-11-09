@@ -1,7 +1,190 @@
 {% extends "base_manager.html" %}
 {% block title %}案件列表{% endblock %}
 {% block content %}
-<section id="title">
-    
+<section id="main" class="w-100">
+    <div class="container px-4">
+        <h4>篩選器</h4>
+        <form>
+            <div class="row">
+                <div class="col-2">棟別</div>
+                <div class="col" role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="buildSelect1" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="buildSelect1">所有宿舍</label>
+                
+                    <input type="checkbox" class="btn-check" id="buildSelect2" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="buildSelect2">B1宿</label>
+                
+                    <input type="checkbox" class="btn-check" id="buildSelect3" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="buildSelect3">B2宿</label>
+                    
+                    <input type="checkbox" class="btn-check" id="buildSelect4" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="buildSelect4">H宿</label>
+                    
+                    <input type="checkbox" class="btn-check" id="buildSelect5" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="buildSelect5">M宿</label>
+                    
+                    <input type="checkbox" class="btn-check" id="buildSelect6" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="buildSelect6">N宿</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">狀態</div>
+                <div class="col" role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="statusSelect1" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="statusSelect1">所有狀態</label>
+                
+                    <input type="checkbox" class="btn-check" id="statusSelect2" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="statusSelect2">待確認</label>
+                
+                    <input type="checkbox" class="btn-check" id="statusSelect3" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="statusSelect3">已確認</label>
+                    
+                    <input type="checkbox" class="btn-check" id="statusSelect4" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="statusSelect4">處理中</label>
+                    
+                    <input type="checkbox" class="btn-check" id="statusSelect5" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="statusSelect5">等待中</label>
+
+                    <input type="checkbox" class="btn-check" id="statusSelect6" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="statusSelect6">已完成</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">提交日期</div>
+                <div class="col">
+                    <input type="date">
+                    <span>~</span>
+                    <input type="date">
+                </div>
+            </div>
+        </form>
+        <hr>
+        <div id="tesk-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">棟別</th>
+                        <th scope="col">姓名</th>
+                        <th scope="col">維修項目</th>
+                        <th scope="col">日期</th>
+                        <th scope="col">狀態</th>
+                        <th scope="col">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body">
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">B1</th>
+                        <td>柏安</td>
+                        <td>書桌</td>
+                        <td>2023.11.10</td>
+                        <td>待確認</td>
+                        <td>
+                            <button class="btn btn-primary">編輯</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </section>
 {% endblock %}
