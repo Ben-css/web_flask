@@ -110,7 +110,7 @@
             <div class="row justify-content-center p-2">
                 <div class="col-3 text-end"><span class="col-form-label">照片</span></div>
                 <div class="col-6">
-                    <img class="img-fluid" src="{{ url_for('static', filename='img/000.jpg') }}">
+                    <img class="img-fluid" src="{% if form.image != '' %}{{ url_for('static', filename='uploads/' + form.image) }}{% else %}''{% endif %}">
                 </div>
             </div>
 

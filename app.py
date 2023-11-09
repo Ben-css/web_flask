@@ -11,12 +11,25 @@ from wtforms.validators import DataRequired
 import pytz
 import json
 from bson import ObjectId
+import secrets
+import os
+import pathlib
 
-
+# 連接資料庫
 client = pymongo.MongoClient(
     "mongodb+srv://root:root123@cluster0.9cjg4lw.mongodb.net/?retryWrites=true&w=majority")
 db = client.test
 
+# 取得目前檔案所在的資料夾 
+SRC_PATH =  pathlib.Path(__file__).parent.absolute()
+# 結合目前的檔案路徑和static及uploads路徑 
+UPLOAD_FOLDER = os.path.join(SRC_PATH,  'static', 'uploads')
+
+def random_filename(filename):
+    # 生成隨機的文件名，保留文件的擴展名
+    random_name = secrets.token_hex(16)
+    _, ext = os.path.splitext(filename)
+    return random_name + ext
 
 # class MyForm(FlaskForm):
 #     dorm = RadioField(
@@ -198,46 +211,6 @@ def get_progress(form_id):
         return "找不到相應的資料", 404
 
 
-    # # 和資料庫做互動
-    # collection = db.forms
-    
-    # # 使用者學號&姓名
-    # result = collection.find()
-
-    # # 從資料庫動態抓取資料
-    # # itemvalue = []
-    # # subtime = []
-    # # status = []
-    # progress = []
-    # len = 0
-    # # 從資料庫中抓資料做成list
-    # for items in result:
-    #     if items['student_id'] != session['student_id']:
-    #         continue
-    #     len += 1
-    #     # itemvalue.append(items['fix_items'])
-    #     # subtime.append(items['submit_at'])
-    #     # status.append(items['status'])
-    #     progress.append([
-    #         items['fix_items'],
-    #         items['dorms'],
-    #         items['place'],
-    #         items['number'],
-    #         items['submit_at'],
-    #         items['explain'],
-    #         items['status'],
-    #         items['other_fix_items'],
-    #         items['progress_explain']])
-    
-    # # print(explain)
-    # # print(subtime)
-    # # print(status)
-
-    # # print(progress)
-    # # 再把資料轉成json後傳給前端
-    # return jsonify(progress)
-
-
 # 表單驗證、儲存
 @app.route('/submit_form',methods=["POST"])
 def submit_form():
@@ -245,8 +218,16 @@ def submit_form():
 
     twtime = pytz.timezone('Asia/Taipei')
     twtime = datetime.now(twtime)
-    submit_at = twtime.strftime("%Y.%m.%d %H:%M")
+    submit_at = twtime.strftime("%Y.%m.%d %H:%M:%S")
 
+    file = request.files['image']
+    if file.filename != '':
+        random_name = random_filename(file.filename)
+        file.save(os.path.join(UPLOAD_FOLDER, random_name))
+        # print(type(random_name))
+        # return 'File uploaded as: ' + random_name
+        # file.save(os.path.join(UPLOAD_FOLDER, file.filename))
+    # print(type(submit_at))
     # result = collection.find_one({
     #         "$and": [
     #             {"student_id": student_id},
@@ -265,13 +246,10 @@ def submit_form():
         fix_items = request.form["fix_items"]
         other_fix_items = request.form.get("other_fix_items",'')
         fix_explain = request.form["fix_explain"]
-        print(request.form.get("other_fix_items"))
+        # print(request.form.get("other_fix_items"))
         # 進度說明預設為空
         progress_explain = ""
-
-        # print(request.form)
-        # print(dorm)
-
+        # 暫時新增公告用
         # announcements = db.announcements
         # announcements.insert_one({
         #     "title": '你好',
@@ -293,16 +271,11 @@ def submit_form():
             "fix_explain": fix_explain,
             "status": "待確認",
             "submit_at": submit_at,
-            "progress_explain": progress_explain
+            "progress_explain": progress_explain,
+            "image": random_name
         })
-        # 不需要==
-        # form.dorm.data = ''
-        # form.place.data = ''
-        # form.fixsubject_1.data = ''
-        # form.fixsubject_2.data = ''
-        # form.explain.data = ''
 
-        # 刪除資料用
+    # 刪除資料用
     #     collection = db.forms
     #     result = collection.delete_many({
     #         "name": "阿偉"
