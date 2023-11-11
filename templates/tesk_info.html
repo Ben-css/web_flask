@@ -48,7 +48,7 @@
                     </svg>
                     <div class="step-info">
                         <h5>已提交</h5>
-                        <small>{{ form.submit_at }}</small>
+                        <small>{{ form.submit_at.strftime('%Y年%m月%d日 %H:%M') }}</small>
                     </div>
                     
                 </div>
@@ -110,7 +110,9 @@
             <div class="row justify-content-center p-2">
                 <div class="col-3 text-end"><span class="col-form-label">照片</span></div>
                 <div class="col-6">
-                    <img class="img-fluid" src="{% if form.image != '' %}{{ url_for('static', filename='uploads/' + form.image) }}{% else %}''{% endif %}">
+                    {% if form.image != '' %}
+                        <img class="img-fluid" src="{{ url_for('static', filename='uploads/' + form.image) }}">
+                    {% endif %}
                 </div>
             </div>
 

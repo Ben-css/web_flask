@@ -188,7 +188,9 @@ def get_progress(form_id):
     student_id=session.get('student_id')
 
     collection = db.forms
+    # 列出該位使用者提交的forms
     form_list =  list(collection.find({"student_id": student_id}).sort("submit_at", pymongo.DESCENDING))
+    # 尋找特定的forms，以顯示詳細資訊
     form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
     # form = collection.find_one({"_id": form_id, "student_id": student_id})
     # print(bool(collection.find_one({"_id": form_id})))
@@ -217,8 +219,10 @@ def submit_form():
     # form = MyForm()
 
     twtime = pytz.timezone('Asia/Taipei')
-    twtime = datetime.now(twtime)
-    submit_at = twtime.strftime("%Y.%m.%d %H:%M:%S")
+    submit_at = datetime.now(twtime)
+    # submit_at = twtime.strftime("%Y.%m.%d %H:%M:%S")
+
+    random_name = ""  # 默認值
 
     file = request.files['image']
     if file.filename != '':
@@ -278,9 +282,9 @@ def submit_form():
     # 刪除資料用
     #     collection = db.forms
     #     result = collection.delete_many({
-    #         "name": "阿偉"
+    #         "name": "林東科"
     # })
-    #     print("實際上被刪除的資料",result.deleted_count + "筆")
+    #     print("實際上被刪除的資料",str(result.deleted_count) + "筆")
 
     # 記得重新導向回/member !!
     # 不然用render_template("/member",form=form)會被導到/forms
@@ -321,19 +325,28 @@ def manager_signin():
 
 @app.route("/manager_page",methods=['GET'])
 def manager_page():
-    # collection = db.managers
-    # result = collection.find_one({
-    #     "$and": [
-    #         {"account":  session["account"]},
-    #         {"password": session["manager_name"]},
-    #     ]
-    # })
-    # if result == None:
-    #     return redirect("/error?msg=未進行登入，請登入")
-    return render_template('manager_page.html')
+    # personal_info = db.managers
+    collection = db.forms    
+    form_list =  list(collection.find().sort("submit_at", pymongo.DESCENDING))
 
-@app.route("/manager_tesk",methods=['GET'])
-def manager_tesk():
+    # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
+        
+    for student in form_list:
+        student["_id"] = str(student["_id"])
+    # result = collection.find_one({
+    #     "$and": [
+    #         {"account":  session["account"]},
+    #         {"password": session["manager_name"]},
+    #     ]
+    # })
+    # if result == None:
+    #     return redirect("/error?msg=未進行登入，請登入")
+    return render_template('manager_page.html',
+                            form_list =  form_list,
+                            )
+
+# @app.route("/manager_tesk",methods=['GET'])
+# def manager_tesk():
     # collection = db.managers
     # result = collection.find_one({
     #     "$and": [
@@ -343,7 +356,7 @@ def manager_tesk():
     # })
     # if result == None:
     #     return redirect("/error?msg=未進行登入，請登入")
-    return render_template('manager_tesk.html')
+    # return render_template('manager_tesk.html')
 
 
 # 管理員註冊
@@ -468,6 +481,18 @@ def manager_signout():
     del session['account']
     del session['manager_name']
     return redirect("/")
+
+# 暫時新增使用者帳號
+# @app.route("/admin")
+# def admin():
+#     collection = db.managers
+
+#     collection.insert_one({
+#         "manager_name": '柏安',
+#         "account": 'a109510388',
+#         "password": '123456',
+#     })
+#     return redirect("/")
 
 
 app.run(

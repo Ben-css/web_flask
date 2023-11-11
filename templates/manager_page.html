@@ -66,122 +66,30 @@
                         <th scope="col">棟別</th>
                         <th scope="col">姓名</th>
                         <th scope="col">維修項目</th>
-                        <th scope="col">日期</th>
+                        <th scope="col">提交日期</th>
                         <th scope="col">狀態</th>
                         <th scope="col">操作</th>
                     </tr>
                 </thead>
                 <tbody class="table-body">
+                    {% for forms in form_list %}
                     <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
+                        <th scope="row">{{ forms.location }}</th>
+                        <td>{{ forms.name }}</td>
+                        <td>
+                        {% if forms.fix_items == '其他' %}
+                            {{ forms.other_fix_items }}
+                        {% else %}
+                            {{ forms.fix_items }}
+                        {% endif %}
+                        </td>
+                        <td>{{ forms.submit_at.strftime('%Y年%m月%d日 %H:%M') }}</td>
+                        <td>{{ forms.status }}</td>
                         <td>
                             <button class="btn btn-primary">編輯</button>
                         </td>
                     </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">B1</th>
-                        <td>柏安</td>
-                        <td>書桌</td>
-                        <td>2023.11.10</td>
-                        <td>待確認</td>
-                        <td>
-                            <button class="btn btn-primary">編輯</button>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
