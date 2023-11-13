@@ -347,6 +347,10 @@ def manager_page():
                             form_list =  form_list,
                             )
 
+@app.route("/manager/tesk_info",methods=['GET'])
+def manager_tesk_info():
+    return render_template('manager_tesk_info.html' )
+
 # @app.route("/manager_tesk",methods=['GET'])
 # def manager_tesk():
     # collection = db.managers

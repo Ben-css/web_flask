@@ -1,0 +1,66 @@
+{% extends "base_manager.html" %}
+{% block title %}案件詳情{% endblock %}
+{% block content %}
+<section id="main" class="w-100">
+    <div class="container px-4">
+        <div class=" m-3">
+            <h2>案件內容</h2>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">提交者學號</span></div>
+                <div class="col-6"></div>
+            </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">提交者姓名</span></div>
+                <div class="col-6"></div>
+            </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">地點</span></div>
+                <div class="col-6"></div>
+            </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">維修項目</span></div>
+                <div class="col-6"></div>
+            </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">情況說明</span></div>
+                <div class="col-6"></div>
+            </div>
+            <div class="row justify-content-center p-2">
+                <div class="col-3 text-end"><span class="col-form-label">照片</span></div>
+                <div class="col-6">
+                    <img class="img-fluid" src="">
+                </div>
+            </div>
+        </div>
+        <div class=" m-3">
+            <h2>編輯狀態</h2>
+            <form>
+                <fieldset class="row mb-3">
+                    <legend class="col-md-2 col-form-label">維修進度</legend> 
+                    <div class="col-sm-10">
+                        <select class="form-select" aria-label="Default select">
+                            <option selected>選擇處理狀態</option>
+                            <option value="1">已接收</option>
+                            <option value="2">處理中</option>
+                            <option value="3">待料中</option>
+                            <option value="4">已完成</option>
+                        </select>
+                    </div>
+                </fieldset>
+                <div class="row mb-3">
+                    <label for="fix_explain" class="col-sm-2 col-form-label">進度說明</label>
+                    <div class="col-sm-10">
+                        <input type="txet" name="fix_explain" class="form-control" id="fix_explain">
+                    </div>
+                </div>
+                <div class="row justify-content-center p-2">
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">更新狀態</button>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</section>
+{% endblock %}
