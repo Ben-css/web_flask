@@ -245,8 +245,9 @@ def submit_form():
         student_id = session['student_id']
         name = session['name']
         # number = session['number']
-        # dorms = request.form["dorm"]
+        dorms = request.form["dorms"]
         location = request.form["location"]
+        location_detail = request.form["location_detail"]
         fix_items = request.form["fix_items"]
         other_fix_items = request.form.get("other_fix_items",'')
         fix_explain = request.form["fix_explain"]
@@ -267,9 +268,10 @@ def submit_form():
         forms.insert_one({
             "student_id": student_id,
             "name": name,
-            # "dorms": dorms,
+            "dorms": dorms,
             # "number": number,
             "location": location,
+            "location_detail":location_detail,
             "fix_items": fix_items,
             "other_fix_items": other_fix_items,
             "fix_explain": fix_explain,
