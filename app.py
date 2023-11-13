@@ -351,6 +351,10 @@ def manager_page():
 def manager_tesk_info():
     return render_template('manager_tesk_info.html' )
 
+@app.route("/manager/article",methods=['GET'])
+def manager_article():
+    return render_template('manager_article.html' )
+
 # @app.route("/manager_tesk",methods=['GET'])
 # def manager_tesk():
     # collection = db.managers
