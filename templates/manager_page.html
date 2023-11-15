@@ -87,10 +87,10 @@
                             {{ forms.fix_items }}
                         {% endif %}
                         </td>
-                        <td>{{ forms.submit_at.strftime('%Y年%m月%d日 %H:%M') }}</td>
+                        <td>{{ forms.submit_at.strftime('%Y年%m月%d日') }}</td>
                         <td>{{ forms.status }}</td>
                         <td>
-                            <button class="btn btn-primary">編輯</button>
+                            <a href="/manager/tesk_info/{{ forms["_id"] }}" class="btn btn-primary">編輯</a>
                         </td>
                     </tr>
                     {% endfor %}
