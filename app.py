@@ -399,9 +399,9 @@ def manager_tesk_update(_id):
     # else:
     #     return redirect("/error?msg=未進行登入，請先登入")
 
-@app.route("/manager/article",methods=['GET'])
-def manager_article():
-    return render_template('manager_article.html' )
+@app.route("/manager/accouncement",methods=['GET'])
+def manager_accouncement():
+    return render_template('manager_accouncement.html' )
 
 # @app.route("/manager_tesk",methods=['GET'])
 # def manager_tesk():
