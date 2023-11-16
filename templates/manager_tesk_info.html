@@ -7,50 +7,70 @@
             <h2>案件內容</h2>
             <div class="row justify-content-center p-2 border-bottom border-opacity-50">
                 <div class="col-3 text-end"><span class="col-form-label">提交者學號</span></div>
-                <div class="col-6"></div>
+                <div class="col-6">{{ form_info.student_id }}</div>
             </div>
             <div class="row justify-content-center p-2 border-bottom border-opacity-50">
                 <div class="col-3 text-end"><span class="col-form-label">提交者姓名</span></div>
-                <div class="col-6"></div>
+                <div class="col-6">{{ form_info.name}}</div>
             </div>
             <div class="row justify-content-center p-2 border-bottom border-opacity-50">
                 <div class="col-3 text-end"><span class="col-form-label">地點</span></div>
-                <div class="col-6"></div>
+                <div class="col-6">{{ form_info.location }}</div>
             </div>
             <div class="row justify-content-center p-2 border-bottom border-opacity-50">
                 <div class="col-3 text-end"><span class="col-form-label">維修項目</span></div>
-                <div class="col-6"></div>
+                <div class="col-6">{{ form_info.fix_items }}</div>
             </div>
             <div class="row justify-content-center p-2 border-bottom border-opacity-50">
                 <div class="col-3 text-end"><span class="col-form-label">情況說明</span></div>
-                <div class="col-6"></div>
+                <div class="col-6">{{ form_info.fix_explain }}</div>
             </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">狀態</span></div>
+                <div class="col-6">{{ form_info.status }}</div>
+            </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">進度說明</span></div>
+                <div class="col-6">{{ form_info.progress_explain }}</div>
+            </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">更新時間</span></div>
+                <div class="col-6">{{ form_info.update_at.strftime('%Y年%m月%d日 %H:%M分') }}</div>
+            </div>
+            <div class="row justify-content-center p-2 border-bottom border-opacity-50">
+                <div class="col-3 text-end"><span class="col-form-label">最新的更新者</span></div>
+                <div class="col-6">{{ form_info.manager_name }} 老師</div>
+            </div>  
             <div class="row justify-content-center p-2">
                 <div class="col-3 text-end"><span class="col-form-label">照片</span></div>
                 <div class="col-6">
-                    <img class="img-fluid" src="">
+                    {% if form_info.image != '' %}
+                        <img class="img-fluid" src="{{ url_for('static', filename='uploads/' + form_info.image) }}">
+                    {% endif %}
                 </div>
             </div>
+            
         </div>
         <div class=" m-3">
             <h2>編輯狀態</h2>
-            <form>
+            <form action="/manager/tesk_update/{{ form_info['_id'] }}" method="post">
                 <fieldset class="row mb-3">
                     <legend class="col-md-2 col-form-label">維修進度</legend> 
                     <div class="col-sm-10">
-                        <select class="form-select" aria-label="Default select">
-                            <option selected>選擇處理狀態</option>
-                            <option value="1">已接收</option>
-                            <option value="2">處理中</option>
-                            <option value="3">待料中</option>
-                            <option value="4">已完成</option>
+                        <select class="form-select" name="status" aria-label="Default select">
+                            <option value="" {% if form_info.status == "" %}selected{% endif %}>選擇處理狀態</option>
+                            <option value="待確認" {% if form_info.status == "待確認" %}selected{% endif %}>待確認</option>
+                            <option value="已接收" {% if form_info.status == "已接收" %}selected{% endif %}>已接收</option>
+                            <option value="處理中" {% if form_info.status == "處理中" %}selected{% endif %}>處理中</option>
+                            <option value="待料中" {% if form_info.status == "待料中" %}selected{% endif %}>待料中</option>
+                            <option value="已完成" {% if form_info.status == "已完成" %}selected{% endif %}>已完成</option>
                         </select>
                     </div>
                 </fieldset>
                 <div class="row mb-3">
-                    <label for="fix_explain" class="col-sm-2 col-form-label">進度說明</label>
+                    <label for="progress_explain" class="col-sm-2 col-form-label">進度說明</label>
                     <div class="col-sm-10">
-                        <input type="txet" name="fix_explain" class="form-control" id="fix_explain">
+                        <input type="txet" name="progress_explain" class="form-control" id="progress_explain" value="{{ form_info.progress_explain }}">
                     </div>
                 </div>
                 <div class="row justify-content-center p-2">

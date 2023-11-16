@@ -315,17 +315,15 @@ def manager_signin():
     })
 
     # # 登入失敗，到錯誤頁面
-    # if result == None:
-    #     return redirect("/error?msg=帳號或密碼輸入錯誤")
+    if result == None:
+        return redirect("/error?msg=帳號或密碼輸入錯誤")
     # 登入成功，在 session 紀錄會員資訊，到會員頁面
-    session["account"] = 'a12345678'
-    # result["account"]
-    session["manager_name"] = '可莉玩家'
-    # result["manager_name"]
+    session["account"] = result["account"]
+    session["manager_name"] = result["manager_name"]
     # print(session['account'])
-    return redirect("/manager_page")
+    return redirect("/manager/page")
 
-@app.route("/manager_page",methods=['GET'])
+@app.route("/manager/page",methods=['GET'])
 def manager_page():
     # personal_info = db.managers
     collection = db.forms    
@@ -347,9 +345,59 @@ def manager_page():
                             form_list =  form_list,
                             )
 
-@app.route("/manager/tesk_info",methods=['GET'])
-def manager_tesk_info():
-    return render_template('manager_tesk_info.html' )
+@app.route("/manager/tesk_info/<_id>",methods=['GET'])
+def manager_tesk_info(_id):
+    collection = db.forms
+    _id = ObjectId(_id)
+    form_info = collection.find_one({"_id": _id})
+    # print(bool(collection.find_one({"_id": _id})))
+    # print(type(_id))
+    # for student in form_list:
+    form_info["_id"] = str(form_info["_id"])
+
+    # print(form_list)
+    return render_template("/manager_tesk_info.html",
+    #    form=form,
+        # name=session.get('name'),
+        # student_id=session.get('student_id'),
+        form_info = form_info,
+        )
+    # else:
+    #     return redirect("/error?msg=未進行登入，請先登入")
+
+@app.route("/manager/tesk_update/<_id>",methods=['POST'])
+def manager_tesk_update(_id):
+    # collection = db.forms
+    _id = ObjectId(_id)
+    # form_info = collection.find_one({"_id": _id})
+    filter = {"_id": _id}
+    
+    twtime = pytz.timezone('Asia/Taipei')
+    update_at = datetime.now(twtime)
+
+    # print(request.form.get("other_fix_items"))
+    # 進度說明預設為空
+    status = request.form["status"]
+    progress_explain = request.form["progress_explain"]
+    manager_name = session['manager_name']
+
+    update_data = {
+    "$set": {
+        "manager_name": manager_name,
+        "status": status,
+        "update_at": update_at,
+        "progress_explain": progress_explain,
+        }
+    }
+    # 用_id塞選後將資料放入
+    forms = db.forms
+    forms.update_one(filter, update_data)
+
+    # str_id = str(_id)
+    redirect_url = url_for('manager_tesk_info', _id=_id)
+    return redirect(redirect_url)
+    # else:
+    #     return redirect("/error?msg=未進行登入，請先登入")
 
 @app.route("/manager/article",methods=['GET'])
 def manager_article():
@@ -486,7 +534,7 @@ def signout():
     # del session["number"]
     return redirect("/")
 
-@app.route("/manager_signout")
+@app.route("/manager/signout")
 def manager_signout():
     del session['account']
     del session['manager_name']
