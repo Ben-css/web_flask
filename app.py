@@ -259,7 +259,7 @@ def submit_form():
         # announcements.insert_one({
         #     "title": '你好',
         #     "content": '你好??',
-        #     "creater": '東科',
+        #     "creator": '東科',
         #     "created_at": submit_at,
         #     "updated_at": submit_at,
         # })
@@ -365,6 +365,7 @@ def manager_tesk_info(_id):
     # else:
     #     return redirect("/error?msg=未進行登入，請先登入")
 
+# 管理者的維修表單編輯
 @app.route("/manager/tesk_update/<_id>",methods=['POST'])
 def manager_tesk_update(_id):
     # collection = db.forms
@@ -399,13 +400,34 @@ def manager_tesk_update(_id):
     # else:
     #     return redirect("/error?msg=未進行登入，請先登入")
 
+# 管理者的公告管理
 @app.route("/manager/announcement",methods=['GET'])
 def manager_announcement():
-    return render_template('manager_announcement.html' )
+    collection = db.announcements    
+    announcement_list =  list(collection.find().sort("created_at", pymongo.DESCENDING))
+    # print(anncouncement_list)
+    # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
+        
+    for annc in announcement_list:
+        annc["_id"] = str(annc["_id"])
 
-@app.route("/manager/announcement/edit",methods=['GET'])
-def manager_announcement_edit():
-    return render_template('manager_announcement_edit.html' )
+    return render_template('manager_announcement.html',
+            announcement_list = announcement_list               
+            )
+
+# 管理者的公告編輯
+@app.route("/manager/announcement/edit/<_id>",methods=['GET'])
+def manager_announcement_edit(_id):
+    collection = db.announcements
+    _id = ObjectId(_id)
+    announcement_info = collection.find_one({"_id": _id})
+    # print(bool(collection.find_one({"_id": _id})))
+    # print(type(_id))
+    # for student in form_list:
+    announcement_info["_id"] = str(announcement_info["_id"])
+
+    return render_template('manager_announcement_edit.html',
+            announcement_info = announcement_info )
 
 # @app.route("/manager_tesk",methods=['GET'])
 # def manager_tesk():
