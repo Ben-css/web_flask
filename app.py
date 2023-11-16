@@ -403,6 +403,10 @@ def manager_tesk_update(_id):
 def manager_article():
     return render_template('manager_article.html' )
 
+@app.route("/manager/announcement/edit",methods=['GET'])
+def manager_announcement_edit():
+    return render_template('manager_announcement_edit.html' )
+
 # @app.route("/manager_tesk",methods=['GET'])
 # def manager_tesk():
     # collection = db.managers

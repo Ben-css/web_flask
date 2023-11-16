@@ -8,125 +8,52 @@
 <section id="main" class="w-100">
     <div class="container px-4">
         <div class="container px-3">
-            <h2>維修表單</h2>
-            <form action="/submit_form" method="post" enctype="multipart/form-data">
+            <h2 class="my-3">新增文章</h2>
+            <h2 class="my-3">編輯文章</h2>
+            <form action="" method="post" enctype="multipart/form-data">
                 <fieldset class="row mb-3">
-                    <div class="row md-3">
-                        <label class="col-md-2 col-form-label">提交人資料</label>
-                        <div class="col-md-10">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="studentId" class="form-label">學號</label>
-                                    <input type="text" class="form-control" id="studentId" value="{{ student_id }}" disabled>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="name" class="form-label">姓名</label>
-                                    <input type="text" class="form-control" id="name" value="{{ name }}" disabled>
-                                </div>
-                            </div>
-                        </div> 
-                    </div>
+                    <label class="col-md-2 col-form-label">標題</label>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="" value="">
+                    </div> 
                 </fieldset>
 
                 <fieldset class="row mb-3">
                     <!-- <div class="row mb-3"> -->
-                        <label class="col-md-2 col-form-label">棟別</label>
+                        <label class="col-md-2 col-form-label">主要圖片</label>
                         <div class="col-md-10">
-                            <div class="row">
-                                <!-- <div class="col-md-10 location-section active"></div> -->
-                                <div class="col-md-10">
-                                    <!-- <div class="row"> -->
-                                        <div class="col-md-4">
-                                            <!-- <label for="studentId" class="form-label">棟別</label> -->
-                                            <select class="form-select" name="dorms" aria-label="Default select example" required>
-                                                <option value="">請選擇棟別</option>
-                                                <option value="B1">B1</option>
-                                                <option value="B2">B2</option>
-                                                <option value="H">H</option>
-                                                <option value="M">M</option>
-                                                <option value="N">N</option>
-                                            </select>
-                                        </div>
-                                        <!-- <div class="col-md-6">
-                                            <label for="studentId" class="form-label">房號</label>
-                                            <input type="text" class="form-control" id="studentId" value="">
-                                        </div> -->
-                                    <!-- </div> -->
-                                </div>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="inputGroupFile04" accept="image/*" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                <!-- 可以設計說有已上傳的圖片時按鈕才出現 -->
+                                <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon04">刪除現有圖片</button>
                             </div>
+                            <img class="img-fluid" src="\img\000.jpg" style="height: 50vh;">
                         </div>
                     <!-- </div> -->
                 </fieldset>
 
                 <fieldset class="row mb-3">
-                    <label class="col-md-2 col-form-label">地點</label>
+                    <label class="col-md-2 col-form-label">內容</label>
                     <div class="col-md-10">
-                        <div class="row">
-                            <div class="col-md-auto">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="location" id="inroom" value="寢室" required>
-                                    <label class="form-check-label" for="inroom">寢室</label>
-                                </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="location" id="publicArea" value="公共區域" required>
-                                    <label class="form-check-label" for="publicArea">公共區域</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-10">
-                                <label for="exampleFormControlInput1" class="form-label">詳細地點</label>
-                                <input type="text" name="location_detail" class="form-control" id="exampleFormControlInput1" placeholder="寢室ex:B1-301-2或H126C4 | 公共區域ex:三樓飲水機" required>
-                            </div>
-                        </div>
+                        <input type="textarea" class="form-control" name="" value="">
                     </div>
                 </fieldset>
             
                 <fieldset class="row mb-3">
-                    <legend class="col-md-2 col-form-label">維修項目</legend> 
+                    <legend class="col-md-2 col-form-label">置頂</legend> 
                     <div class="col-sm-10">
-                        <div class="form-check">
-                            <label for="fix_items" class="form-label">維修物列表</label>
-                            <select class="form-select" name="fix_items" id="fix_items" aria-label="Default select example" required>
-                                <option value="">請選擇項目</option>
-                                <optgroup label="水電">
-                                  <option value="電燈">電燈</option>
-                                  <option value="插座">插座</option>
-                                  <option value="馬桶">馬桶</option>
-                                </optgroup>
-                                <optgroup label="一般維修項目">
-                                  <option value="門把">門把</option>
-                                  <option value="桌椅">桌椅</option>
-                                  <option value="衣櫃">衣櫃</option>
-                                </optgroup>
-                                <optgroup label="網路">
-                                  <option value="網路接口">網路接口</option>
-                                </optgroup>
-                                <option value="其他">其他</option>
-                              </select>
-                        </div>
-                        <br>
-                        
-                        <div class="mb-3 form-check">
-                            <label for="other_fix_items" class="form-label">未列出的維修項目</label>
-                            <input type="text" name="other_fix_items" class="form-control" id="other_fix_items" placeholder="請點選維修物列表中的其他，才能使用" disabled>
-                        </div>
+                         
                     </div>
                 </fieldset>
-                <div class="row mb-3">
-                    <label for="fix_explain" class="col-sm-2 col-form-label">情況說明</label>
-                    <div class="col-sm-10">
-                      <input type="txet" name="fix_explain" class="form-control" id="fix_explain">
+
+                <fieldset class="row mb-3">
+                    <label class="col-md-2 col-form-label">上下架</label>
+                    <div class="col-md-10">
+
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <label for="photo" class="col-sm-2 col-form-label">照片上傳</label>
-                    <div class="col-sm-10">
-                        <input type="file" name="image" accept="image/*" class="form-control" id="inputGroupFile01">
-                    </div>
-                </div>
+                </fieldset>
+
+
                 <div class="row justify-content-md-center">
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary">提交</button>
@@ -137,41 +64,6 @@
                 </div>
             </form>
         </div>    
-        <hr>
-        <div id="tesk-table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">狀態</th>
-                        <th scope="col">置頂</th>
-                        <th scope="col">標題</th>
-                        <th scope="col">作者</th>
-                        <th scope="col">創立時間</th>
-                        <th scope="col">編輯</th>
-                    </tr>
-                </thead>
-                <tbody class="table-body">
-                    <tr>
-                        <th scope="row">已上架</th>
-                        <td>
-                            
-                        </td>
-                        <td>
-                            <a href="/announcement/IDontKnowWhiceIDShouldITake">
-                                112-2宿舍抽取公告
-                            </a>
-                        </td>
-                        <td>陳柏安 老師</td>
-                        <td>2023.11.11 11:11</td>
-                        <td>
-                            <button class="btn btn-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#ffffff}</style><path d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152V424c0 48.6 39.4 88 88 88H360c48.6 0 88-39.4 88-88V312c0-13.3-10.7-24-24-24s-24 10.7-24 24V424c0 22.1-17.9 40-40 40H88c-22.1 0-40-17.9-40-40V152c0-22.1 17.9-40 40-40H200c13.3 0 24-10.7 24-24s-10.7-24-24-24H88z"/></svg>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
 </section>
 {% endblock %}
