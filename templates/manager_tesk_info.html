@@ -35,11 +35,21 @@
             </div>
             <div class="row justify-content-center p-2 border-bottom border-opacity-50">
                 <div class="col-3 text-end"><span class="col-form-label">更新時間</span></div>
-                <div class="col-6">{{ form_info.update_at.strftime('%Y年%m月%d日 %H:%M分') }}</div>
+                <div class="col-6">
+                    {% if form_info.update_at %}
+                        {{ form_info.update_at.strftime('%Y年%m月%d日 %H:%M分') }}
+                    {% else %}
+                        
+                    {% endif %}
+                </div>
             </div>
             <div class="row justify-content-center p-2 border-bottom border-opacity-50">
                 <div class="col-3 text-end"><span class="col-form-label">最新的更新者</span></div>
-                <div class="col-6">{{ form_info.manager_name }} 老師</div>
+                <div class="col-6">{% if form_info.manager_name %}
+                    {{ form_info.manager_name }} 老師
+                {% else %}
+                    
+                {% endif %}</div>
             </div>  
             <div class="row justify-content-center p-2">
                 <div class="col-3 text-end"><span class="col-form-label">照片</span></div>
