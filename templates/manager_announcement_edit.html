@@ -1,55 +1,66 @@
 {% extends "base_manager.html" %}
 {% block title %}
-<!-- 可以的話幫我寫一個判斷式顯示下方兩行的其中之一 -->
-新增文章
-編輯-文章名稱
+
 {% endblock %}
 {% block content %}
 <section id="main" class="w-100">
     <div class="container px-4">
         <div class="container px-3">
-            <h2 class="my-3">新增文章</h2>
-            <h2 class="my-3">編輯文章</h2>
-            <form action="" method="post" enctype="multipart/form-data">
+            <!-- <h2 class="my-3">新增文章</h2> -->
+            <h2 class="my-3">{{ title }}</h2>
+            <form action="{{ action }}" method="post" enctype="multipart/form-data">
                 <fieldset class="row mb-3">
                     <label class="col-md-2 col-form-label">標題</label>
                     <div class="col-md-10">
-                        <input type="text" class="form-control" id="" value="">
+                        <input type="text" class="form-control" id="title" name="title" value="{{ announcement_info.title if announcement_info else '' }}">
                     </div> 
                 </fieldset>
 
-                <fieldset class="row mb-3">
-                    <!-- <div class="row mb-3"> -->
+                <!-- <fieldset class="row mb-3">
                         <label class="col-md-2 col-form-label">主要圖片</label>
                         <div class="col-md-10">
                             <div class="input-group">
                                 <input type="file" class="form-control" id="inputGroupFile04" accept="image/*" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                <!-- 可以設計說有已上傳的圖片時按鈕才出現 -->
+                                
                                 <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon04">刪除現有圖片</button>
                             </div>
                             <img class="img-fluid" src="\img\000.jpg" style="height: 50vh;">
-                        </div>
-                    <!-- </div> -->
-                </fieldset>
+                        </div>   
+                </fieldset> -->
 
                 <fieldset class="row mb-3">
                     <label class="col-md-2 col-form-label">內容</label>
                     <div class="col-md-10">
-                        <input type="textarea" class="form-control" name="" value="">
+                        <textarea class="form-control" name="content" rows="5">{{ announcement_info.content if announcement_info else '' }}</textarea>
                     </div>
                 </fieldset>
             
-                <fieldset class="row mb-3">
-                    <legend class="col-md-2 col-form-label">置頂</legend> 
+                <fieldset class="row mb-3 align-items-center">
+                    <legend class="col-md-2 col-form-label">置頂</legend>
                     <div class="col-sm-10">
-                         
+                        <!-- Checkbox for "是否置頂" -->
+                        <input class="form-check-input" value="置頂" type="checkbox" id="is_top" name="is_top" 
+                        {% if announcement_info %}
+                        {{ 'checked' if announcement_info.is_top == '置頂' else '' }}
+                        {% endif %}>
+                        <label class="form-check-label" for="is_top">是否置頂</label>
                     </div>
                 </fieldset>
 
                 <fieldset class="row mb-3">
                     <label class="col-md-2 col-form-label">上下架</label>
-                    <div class="col-md-10">
+                    <div class="col-md-2">
+                        <select class="form-select" name="status" aria-label="Default select example">
+                            <option value="上架"
+                            {% if announcement_info %}
+                            {{ 'selected' if announcement_info.status == '上架' else '' }}
+                            {% endif %}>上架</option>
 
+                            <option value="下架"
+                            {% if announcement_info %}
+                            {{ 'selected' if announcement_info.status == '下架' else '' }}
+                            {% endif %}>下架</option>
+                        </select>
                     </div>
                 </fieldset>
 
