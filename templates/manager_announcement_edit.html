@@ -45,25 +45,22 @@
                             {% endif %}>
                             <label class="form-check-label" for="is_top">是否置頂</label>
                         </div>
-                    <legend class="col-md-2 col-form-label">置頂</legend>
                 </fieldset>
 
                 <fieldset class="row mb-3 align-items-center">
                     <label class="col-md-2 col-form-label">上下架</label>
                     <div class="col-md-10">
-                        <div class="form-check form-switch">
-                            <select class="form-select" name="status" aria-label="Default select example">
-                                <option value="上架"
-                                {% if announcement_info %}
-                                {{ 'selected' if announcement_info.status == '上架' else '' }}
-                                {% endif %}>上架</option>
-    
-                                <option value="下架"
-                                {% if announcement_info %}
-                                {{ 'selected' if announcement_info.status == '下架' else '' }}
-                                {% endif %}>下架</option>
-                            </select>
-                        </div>
+                        <select class="form-select" name="status" aria-label="Default select example">
+                            <option value="上架"
+                            {% if announcement_info %}
+                            {{ 'selected' if announcement_info.status == '上架' else '' }}
+                            {% endif %}>上架</option>
+
+                            <option value="下架"
+                            {% if announcement_info %}
+                            {{ 'selected' if announcement_info.status == '下架' else '' }}
+                            {% endif %}>下架</option>
+                        </select>
                     </div>
                 </fieldset>
 
