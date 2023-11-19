@@ -254,15 +254,6 @@ def submit_form():
         # print(request.form.get("other_fix_items"))
         # 進度說明預設為空
         progress_explain = ""
-        # 暫時新增公告用
-        # announcements = db.announcements
-        # announcements.insert_one({
-        #     "title": '你好',
-        #     "content": '你好??',
-        #     "creater": '東科',
-        #     "created_at": submit_at,
-        #     "updated_at": submit_at,
-        # })
 
         forms = db.forms
         forms.insert_one({
@@ -365,6 +356,7 @@ def manager_tesk_info(_id):
     # else:
     #     return redirect("/error?msg=未進行登入，請先登入")
 
+# 管理者的維修表單編輯
 @app.route("/manager/tesk_update/<_id>",methods=['POST'])
 def manager_tesk_update(_id):
     # collection = db.forms
@@ -399,26 +391,128 @@ def manager_tesk_update(_id):
     # else:
     #     return redirect("/error?msg=未進行登入，請先登入")
 
+# 管理者的公告管理
 @app.route("/manager/announcement",methods=['GET'])
 def manager_announcement():
-    return render_template('manager_announcement.html' )
+    collection = db.announcements    
+    announcement_list =  list(collection.find().sort("created_at", pymongo.DESCENDING))
+    # print(anncouncement_list)
+    # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
+        
+    for annc in announcement_list:
+        annc["_id"] = str(annc["_id"])
 
-@app.route("/manager/announcement/edit",methods=['GET'])
-def manager_announcement_edit():
-    return render_template('manager_announcement_edit.html' )
+    return render_template('manager_announcement.html',
+            announcement_list = announcement_list               
+            )
 
-# @app.route("/manager_tesk",methods=['GET'])
-# def manager_tesk():
-    # collection = db.managers
-    # result = collection.find_one({
-    #     "$and": [
-    #         {"account":  session["account"]},
-    #         {"password": session["manager_name"]},
-    #     ]
-    # })
-    # if result == None:
-    #     return redirect("/error?msg=未進行登入，請登入")
-    # return render_template('manager_tesk.html')
+# 管理者新增公告頁
+@app.route("/manager/announcement/add",methods=['GET'])
+def manager_announcement_add():
+    # collection = db.announcements    
+    # announcement_list =  list(collection.find().sort("created_at", pymongo.DESCENDING))
+    # print(anncouncement_list)
+    # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
+        
+    # for annc in announcement_list:
+    #     annc["_id"] = str(annc["_id"])
+    current_url = request.url
+
+    # 檢查 URL 是否包含 "add" 或 "edit"
+    if "add" in current_url:
+        title = "新增文章"
+    elif "edit" in current_url:
+        title = "編輯文章"
+
+    action = "/manager/announcement/add/submit"
+
+    return render_template('manager_announcement_edit.html',
+            title = title,
+            action = action               
+            )
+
+# 管理者新增公告_POST
+@app.route("/manager/announcement/add/submit",methods=['POST'])
+def manager_announcement_add_submit():
+    twtime = pytz.timezone('Asia/Taipei')
+    created_at = datetime.now(twtime)
+
+    creator = session['name']
+    title = request.form["title"]
+    content = request.form["content"]
+    status = request.form["status"]
+    is_top = request.form["is_top"]
+
+    announcements = db.announcements
+    announcements.insert_one({
+        "title": title,
+        "content": content,
+        "creator": creator,
+        "status": status,
+        "is_top": is_top,
+        "created_at": created_at,
+        "updated_at": created_at,
+    })
+
+    return redirect("/manager/announcement")
+
+# 管理者的公告編輯
+@app.route("/manager/announcement/edit/<_id>",methods=['GET'])
+def manager_announcement_edit(_id):
+    collection = db.announcements
+    _id = ObjectId(_id)
+    announcement_info = collection.find_one({"_id": _id})
+    # print(bool(collection.find_one({"_id": _id})))
+    # print(type(_id))
+    # for student in form_list:
+    announcement_info["_id"] = str(announcement_info["_id"])
+
+    current_url = request.url
+    # 檢查 URL 是否包含 "add" 或 "edit"
+    if "add" in current_url:
+        title = "新增文章"
+    elif "edit" in current_url:
+        title = "編輯文章"
+    
+    action = "/manager/announcement/edit/"+str(_id)+"/post"
+
+    return render_template('manager_announcement_edit.html',
+            announcement_info = announcement_info,
+            title = title,
+            action = action )
+
+# 管理者的公告編輯_POST
+@app.route("/manager/announcement/edit/<_id>/post",methods=['POST'])
+def manager_announcement_edit_post(_id):
+    _id = ObjectId(_id)
+    filter = {"_id": _id}
+
+    twtime = pytz.timezone('Asia/Taipei')
+    updated_at = datetime.now(twtime)
+
+    # title,content,status,is_top = ''
+    # creator = session['name']
+    title = request.form["title"]
+    content = request.form["content"]
+    status = request.form["status"]
+    is_top = request.form["is_top"]
+
+    update_data = {
+    "$set": {
+        "title": title,
+        "content": content,
+        # "creator": creator,
+        "status": status,
+        "is_top": is_top,
+        # "created_at": created_at,
+        "updated_at": updated_at,
+        }
+    }
+    # 用_id塞選後將資料放入
+    forms = db.announcements
+    forms.update_one(filter, update_data)
+
+    return redirect("/manager/announcement")
 
 
 # 管理員註冊
