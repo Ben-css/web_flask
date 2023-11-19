@@ -35,21 +35,27 @@
                 <fieldset class="row mb-3">
                     <label class="col-md-2 col-form-label">內容</label>
                     <div class="col-md-10">
-                        <input type="textarea" class="form-control" name="" value="">
+                        <textarea class="form-control" rows="3" name="" value=""></textarea>
                     </div>
                 </fieldset>
             
-                <fieldset class="row mb-3">
+                <fieldset class="row mb-3 align-items-center">
                     <legend class="col-md-2 col-form-label">置頂</legend> 
                     <div class="col-sm-10">
-                         
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="firstSwitch">
+                            <label class="form-check-label" for="firstSwitch">是否置頂</label>
+                        </div>
                     </div>
                 </fieldset>
 
-                <fieldset class="row mb-3">
+                <fieldset class="row mb-3 align-items-center">
                     <label class="col-md-2 col-form-label">上下架</label>
                     <div class="col-md-10">
-
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="onStageSwitch">
+                            <label class="form-check-label" for="onStageSwitch">是否上架</label>
+                        </div>
                     </div>
                 </fieldset>
 
