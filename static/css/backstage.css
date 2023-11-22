@@ -10,3 +10,11 @@
 .col-form-label {
     text-align: right;
 }
+
+.sidebar {
+    position: fixed;
+}
+
+.main-contect {
+    margin-left: 280px;
+}
