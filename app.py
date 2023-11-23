@@ -165,7 +165,7 @@ def form():
             student["_id"] = str(student["_id"])
 
         # 將_id轉成str
-        announcements_list = announcements.find().sort("created_at", pymongo.DESCENDING)
+        announcements_list = announcements.find({"status": '上架'}).sort("created_at", pymongo.DESCENDING)
         # for anc in announcements_list:
         #     anc["_id"] = str(anc["_id"])
 
@@ -437,6 +437,7 @@ def manager_announcement_add_submit():
     twtime = pytz.timezone('Asia/Taipei')
     created_at = datetime.now(twtime)
 
+    
     creator = session['name']
     title = request.form["title"]
     content = request.form["content"]
@@ -653,6 +654,6 @@ def manager_signout():
 
 app.run(
     host= '0.0.0.0', #任何ip都可訪問
-    port=80, 
+    port=3000, 
     debug=True
     )

@@ -39,6 +39,7 @@
                     <legend class="col-md-2 col-form-label">置頂</legend> 
                     <div class="col-sm-10">
                         <div class="form-check form-switch">
+                            <input type="hidden" name="is_top" value="off">
                             <input class="form-check-input" value="置頂" type="checkbox" role="switch" id="is_top" name="is_top"
                             {% if announcement_info %}
                             {{ 'checked' if announcement_info.is_top == '置頂' else '' }}

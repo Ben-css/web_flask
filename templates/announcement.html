@@ -4,14 +4,14 @@
 <section id="title">
     <div class="container px-5">
         <h2>{{ announcement.title }}</h2>
-        <p>{{ announcement.created_at }}</p>
-        <img class="image mx-auto d-block" src="\img\202182214476.png">
+        <p>{{ announcement.created_at.strftime('%Y/%m/%d') }}</p>
+        <!-- <img class="image mx-auto d-block" src=""> -->
         <hr>
     </div>
 </section>
 <section id="contect">
     <div class="container px-5">
-        <p>{{ announcement.content }}</p>
+        <p style="white-space: pre-line;">{{ announcement.content }}</p>
     </div>
 </section>
 {% endblock %}
