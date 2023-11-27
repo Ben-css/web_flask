@@ -5,48 +5,48 @@
     <div class="container px-4">
         <div class="table-selecter m-3">
             <h4>篩選器</h4>
-            <form>
+            <form action="/manager/page" method="get">
             <div class="row align-items-center mb-3">
                 <div class="col-2">棟別</div>
                 <div class="col" role="group" aria-label="Basic checkbox toggle button group">
-                    <input type="checkbox" class="btn-check" id="buildSelect1" autocomplete="off">
+                    <input type="checkbox" name="dorm" value="all_dorms" class="btn-check" id="buildSelect1" autocomplete="off">
                     <label class="btn btn-outline-primary" for="buildSelect1">所有宿舍</label>
                 
-                    <input type="checkbox" class="btn-check" id="buildSelect2" autocomplete="off">
+                    <input type="checkbox" name="dorm" value="B1" class="btn-check" id="buildSelect2" autocomplete="off">
                     <label class="btn btn-outline-primary" for="buildSelect2">B1宿</label>
                 
-                    <input type="checkbox" class="btn-check" id="buildSelect3" autocomplete="off">
+                    <input type="checkbox" name="dorm" value="B2" class="btn-check" id="buildSelect3" autocomplete="off">
                     <label class="btn btn-outline-primary" for="buildSelect3">B2宿</label>
                     
-                    <input type="checkbox" class="btn-check" id="buildSelect4" autocomplete="off">
+                    <input type="checkbox" name="dorm" value="H" class="btn-check" id="buildSelect4" autocomplete="off">
                     <label class="btn btn-outline-primary" for="buildSelect4">H宿</label>
                     
-                    <input type="checkbox" class="btn-check" id="buildSelect5" autocomplete="off">
+                    <input type="checkbox" name="dorm" value="M" class="btn-check" id="buildSelect5" autocomplete="off">
                     <label class="btn btn-outline-primary" for="buildSelect5">M宿</label>
                     
-                    <input type="checkbox" class="btn-check" id="buildSelect6" autocomplete="off">
+                    <input type="checkbox" name="dorm" value="N" class="btn-check" id="buildSelect6" autocomplete="off">
                     <label class="btn btn-outline-primary" for="buildSelect6">N宿</label>
                 </div>
             </div>
             <div class="row align-items-center mb-3">
                 <div class="col-2">狀態</div>
                 <div class="col" role="group" aria-label="Basic checkbox toggle button group">
-                    <input type="checkbox" class="btn-check" id="statusSelect1" autocomplete="off">
+                    <input type="checkbox" name="status" value="all_status" class="btn-check" id="statusSelect1" autocomplete="off">
                     <label class="btn btn-outline-primary" for="statusSelect1">所有狀態</label>
                 
-                    <input type="checkbox" class="btn-check" id="statusSelect2" autocomplete="off">
+                    <input type="checkbox" name="status" value="待確認" class="btn-check" id="statusSelect2" autocomplete="off">
                     <label class="btn btn-outline-primary" for="statusSelect2">待確認</label>
                 
                     <!-- <input type="checkbox" class="btn-check" id="statusSelect3" autocomplete="off">
                     <label class="btn btn-outline-primary" for="statusSelect3">已確認</label> -->
                     
-                    <input type="checkbox" class="btn-check" id="statusSelect4" autocomplete="off">
+                    <input type="checkbox" name="status" value="處理中" class="btn-check" id="statusSelect4" autocomplete="off">
                     <label class="btn btn-outline-primary" for="statusSelect4">處理中</label>
                     
                     <!-- <input type="checkbox" class="btn-check" id="statusSelect5" autocomplete="off">
                     <label class="btn btn-outline-primary" for="statusSelect5">等待中</label> -->
 
-                    <input type="checkbox" class="btn-check" id="statusSelect6" autocomplete="off">
+                    <input type="checkbox" name="status" value="已完成" class="btn-check" id="statusSelect6" autocomplete="off">
                     <label class="btn btn-outline-primary" for="statusSelect6">已完成</label>
                 </div>
             </div>

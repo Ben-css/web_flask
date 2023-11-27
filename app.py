@@ -318,12 +318,49 @@ def manager_signin():
 def manager_page():
     # personal_info = db.managers
     collection = db.forms    
-    form_list =  list(collection.find().sort("submit_at", pymongo.DESCENDING))
+    # form_list =  list(collection.find().sort("submit_at", pymongo.DESCENDING))
 
     # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
         
+    dorm = request.args.getlist("dorm")
+    status = request.args.getlist("status")
+    start_at = request.args.get("start_at",'')
+    end_at = request.args.get("end_at",'')
+
+    # 創建初始的查詢條件，這裡假設 dorm 和 status 都是列表
+    query = {}
+
+    # 添加 dorm 的篩選條件
+    if "all_dorms" in dorm or dorm == []:
+        # 不需要進一步處理其他宿舍的條件
+        pass
+    else:
+        query["dorms"] = {"$in": dorm}
+
+    # 添加 status 的篩選條件
+    if "all_status" in status or status == []:
+        # 不需要進一步處理其他狀態的條件
+        pass
+    else:
+        query["status"] = {"$in": status}
+
+    # 添加 start_at 和 end_at 的篩選條件
+    if start_at != '' and end_at != '':
+        start_date = datetime.strptime(start_at, "%Y-%m-%d")
+        end_date = datetime.strptime(end_at, "%Y-%m-%d")
+        query["submit_at"] = {"$gte": start_date, "$lte": end_date}
+
+    # 查詢並排序
+    form_list = list(collection.find(query).sort("submit_at", pymongo.DESCENDING))
+
     for student in form_list:
         student["_id"] = str(student["_id"])
+
+    print(dorm)
+    print(status)
+    print(start_at)
+    print(end_at)
+    # fix_explain = request.form["fix_explain"]
     # result = collection.find_one({
     #     "$and": [
     #         {"account":  session["account"]},
@@ -334,6 +371,10 @@ def manager_page():
     #     return redirect("/error?msg=未進行登入，請登入")
     return render_template('manager_page.html',
                             form_list =  form_list,
+                            dorm = dorm,
+                            status = status,
+                            satart_at = start_at,
+                            end_at = end_at
                             )
 
 @app.route("/manager/tesk_info/<_id>",methods=['GET'])
