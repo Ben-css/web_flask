@@ -14,6 +14,8 @@ from bson import ObjectId
 import secrets
 import os
 import pathlib
+import re
+from flask_wtf.csrf import CSRFProtect
 
 # 連接資料庫
 client = pymongo.MongoClient(
@@ -31,16 +33,6 @@ def random_filename(filename):
     _, ext = os.path.splitext(filename)
     return random_name + ext
 
-# class MyForm(FlaskForm):
-#     dorm = RadioField(
-#         '棟別', choices=[('B1', 'B1'), ('B2', 'B2'), ('H', 'H'), ('M', 'M'), ('N', 'N')])
-#     place = RadioField('地點', choices=[('寢室', '寢室'), ('公共區域', '公共區域')])
-#     fix_items = RadioField('類別', choices=[('電燈', '電燈'), ('門栓', '門栓'), ('窗戶', '窗戶'), (
-#         '鏡子', '鏡子'), ('水龍頭', '水龍頭'), ('洗衣機', '洗衣機'), ('烘衣機', '烘衣機'), ('消防設備', '消防設備'), ('其他', '其他')])
-#     other_fix_items = TextAreaField('其他維修項目')
-#     explain = TextAreaField('說明')
-#     submit = SubmitField("確認")
-
 
 app = Flask(
     __name__,
@@ -49,8 +41,13 @@ app = Flask(
 )
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+# 設定scret_key為亂碼
+# app.config['SECRET_KEY'] = os.urandom(24)
 # 設定session key
 app.secret_key = "Hello World"
+# csrf = CSRFProtect(app)
+
+
 
 # 首頁
 @app.route("/")
@@ -65,6 +62,7 @@ def signuppage():
 
 @app.route("/signup", methods=["POST"])
 def signup():
+    # csrf.validate(request.form.get('csrf_token'))
     student_id = request.form['student_id']
     password = request.form['password']
     # email = request.form['email']
@@ -90,6 +88,7 @@ def signup():
 #登入route
 @app.route("/signin", methods=["POST"])
 def signin():
+    # csrf.validate(request.form.get('csrf_token'))
     student_id = request.form["student_id"]
     password = request.form["password"]
     # 和資料庫做互動
@@ -112,7 +111,7 @@ def signin():
     # print(session['student_id'])
     return redirect("/form")
 
-# 會員頁
+# 會員頁(目前沒用)
 @app.route("/member")
 def member():
     # form = MyForm()
@@ -216,7 +215,7 @@ def get_progress(form_id):
 # 表單驗證、儲存
 @app.route('/submit_form',methods=["POST"])
 def submit_form():
-    # form = MyForm()
+    # csrf.validate(request.form.get('csrf_token'))
 
     twtime = pytz.timezone('Asia/Taipei')
     submit_at = datetime.now(twtime)
@@ -293,6 +292,7 @@ def manager_signin_page():
 
 @app.route("/manager_signin", methods=["POST"])
 def manager_signin():
+    # csrf.validate(request.form.get('csrf_token'))
     account = request.form["account"]
     password = request.form["password"]
     # 和資料庫做互動
@@ -356,10 +356,10 @@ def manager_page():
     for student in form_list:
         student["_id"] = str(student["_id"])
 
-    print(dorm)
-    print(status)
-    print(start_at)
-    print(end_at)
+    # print(dorm)
+    # print(status)
+    # print(start_at)
+    # print(end_at)
     # fix_explain = request.form["fix_explain"]
     # result = collection.find_one({
     #     "$and": [
@@ -373,7 +373,7 @@ def manager_page():
                             form_list =  form_list,
                             dorm = dorm,
                             status = status,
-                            satart_at = start_at,
+                            start_at = start_at,
                             end_at = end_at
                             )
 
@@ -400,6 +400,7 @@ def manager_tesk_info(_id):
 # 管理者的維修表單編輯
 @app.route("/manager/tesk_update/<_id>",methods=['POST'])
 def manager_tesk_update(_id):
+    # csrf.validate(request.form.get('csrf_token'))
     # collection = db.forms
     _id = ObjectId(_id)
     # form_info = collection.find_one({"_id": _id})
@@ -436,15 +437,47 @@ def manager_tesk_update(_id):
 @app.route("/manager/announcement",methods=['GET'])
 def manager_announcement():
     collection = db.announcements    
-    announcement_list =  list(collection.find().sort("created_at", pymongo.DESCENDING))
+    print(session.get("name"))
+    keyword = request.args.get("keyword", '')
+    # print(keyword)
+    # 創建初始的查詢條件，這裡假設 dorm 和 status 都是列表
+    query = {}
+    if keyword != '':
+        regex_pattern = re.compile(f".*{re.escape(keyword)}.*", re.IGNORECASE)
+        query = {
+            "$or": [
+                {"creator": {"$regex": regex_pattern}},
+                {"title": {"$regex": regex_pattern}},
+            ]
+        }
+        # print(query) 
+        # announcement_list = list(collection.find(query).sort("created_at", pymongo.DESCENDING))
+    # else:
+        # announcement_list =  list(collection.find().sort("created_at", pymongo.DESCENDING))
+    
+    status = request.args.getlist("status")
+    print(status)
+    # 添加 status 的篩選條件
+    if "all_status" in status or status == []:
+        # 不需要進一步處理其他狀態的條件
+        pass
+    else:
+        query["status"] = {"$in": status}
+
+    announcement_list = list(collection.find(query).sort("submit_at", pymongo.DESCENDING))
+    
     # print(anncouncement_list)
     # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
-        
+
+    # other_fix_items = request.form.get("other_fix_items",'')
+
     for annc in announcement_list:
         annc["_id"] = str(annc["_id"])
 
     return render_template('manager_announcement.html',
-            announcement_list = announcement_list               
+            announcement_list = announcement_list,
+            keyword = keyword,
+            status = status               
             )
 
 # 管理者新增公告頁
@@ -475,6 +508,7 @@ def manager_announcement_add():
 # 管理者新增公告_POST
 @app.route("/manager/announcement/add/submit",methods=['POST'])
 def manager_announcement_add_submit():
+    # csrf.validate(request.form.get('csrf_token'))
     twtime = pytz.timezone('Asia/Taipei')
     created_at = datetime.now(twtime)
 
@@ -526,6 +560,7 @@ def manager_announcement_edit(_id):
 # 管理者的公告編輯_POST
 @app.route("/manager/announcement/edit/<_id>/post",methods=['POST'])
 def manager_announcement_edit_post(_id):
+    # csrf.validate(request.form.get('csrf_token'))
     _id = ObjectId(_id)
     filter = {"_id": _id}
 
@@ -560,6 +595,7 @@ def manager_announcement_edit_post(_id):
 # 管理員註冊
 @app.route("/manager_signup", methods=["POST"])
 def manager_signup():
+    # csrf.validate(request.form.get('csrf_token'))
     manager_name = request.form['manager_name']
     account = request.form['account']
     password = request.form['password']
@@ -582,81 +618,6 @@ def manager_signup():
 @app.route("/manager_signup_page", methods=["POST"])
 def manager_signup_page():
     return render_template('manager_signup.html')
-
-
-
-# 維修單
-@app.route("/fix_page")
-def  fix_page():
-    # 和資料庫做互動
-    collection = db.forms
-
-    # 使用者學號&姓名
-    result = collection.find()
-  
-
-    # result1 = collection1.find()
-
-    # 從資料庫動態抓取資料
-    # itemvalue = []
-    # subtime = []
-    # status = []
-    fixlist = []
-    len = 0
-    # 從資料庫中抓資料做成list
-    for items in result:
-        len += 1
-        # itemvalue.append(items['fix_items'])
-        # subtime.append(items['submit_at'])
-        # status.append(items['status'])
-        fixlist.append([
-            # items['dorms'],
-            items['name'],
-            items['fix_items'],
-            items['location'],
-            # items['number'],
-            items['status'],
-            items['submit_at'],
-            items['fix_explain'],
-            items['other_fix_items'],
-            items['progress_explain']])
-    
-    # print(itemvalue)
-    # print(subtime)
-    # print(status)
-    # print(fixlist)
-    # 再把資料轉成json後傳給前端
-    return jsonify(fixlist)
-
-
-
-@app.route("/fixlist_change")
-def fixlist_change():
-    twtime = pytz.timezone('Asia/Taipei')
-    twtime = datetime.now(twtime)
-    changetime = twtime.strftime("%Y.%m.%d %H:%M")
-
-    if request.method == "POST":
-        time = request.form["status"]
-        name = request.form["name"]
-        # 進度說明預設為空
-        progress_explain = request.form["progress_explain"]
-
-        print(request.form)
-        # print(dorm)
-
-        forms = db.forms
-        # 找到要修改的fixform
-        # result = forms.update_one({
-        #     "$and": [
-        #     {"submit_at": time},
-        #     {"name": name},
-        # ],"$set":{
-        #     "status"
-        #     }
-        # })
-    return redirect(url_for('fix_page'))
-        
 
 
 # 錯誤route
