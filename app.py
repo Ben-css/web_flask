@@ -656,6 +656,6 @@ def manager_signout():
 
 app.run(
     host= '0.0.0.0', #任何ip都可訪問
-    port=3000, 
+    port=8001, 
     debug=True
     )
