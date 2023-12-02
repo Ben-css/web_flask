@@ -82,7 +82,8 @@
                                 {% endif %}
                             </legend>
                             <h6 class="card-subtitle mb-2 text-muted">{{ progress.status }}</h6>
-                            <p class="card-text">提交時間: {{ progress.submit_at.strftime('%Y/%m/%d %H:%M分') }}<br>最後更新時間:2023/05/10 20:57:53</p>
+                            <!-- TODO:最後更新時間要是動態的 -->
+                            <p class="card-text">提交時間: {{ progress.submit_at.strftime('%Y/%m/%d %H:%M') }}<br>最後更新時間:2023/05/10 20:57:53</p>
                             <a href="/tesk_info/{{ progress["_id"] }}" class="btn btn-primary">詳情</a>
                         </div>
                     </div>
