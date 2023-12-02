@@ -31,6 +31,7 @@ footer{
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     padding-bottom: 20px;
+    justify-content: start;
 }
 .card-img-top {
     width: 100%;
