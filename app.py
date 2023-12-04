@@ -2,7 +2,7 @@ from flask import *
 import pymongo
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
-from datetime import datetime
+from datetime import datetime,timedelta
 from flask_wtf import FlaskForm
 from wtforms import (StringField, BooleanField, DateTimeField,
                      RadioField, SelectField,
@@ -41,10 +41,13 @@ app = Flask(
 )
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+
+# 設定session為24小時
+app.permanent_session_lifetime = timedelta(hours=24)
 # 設定scret_key為亂碼
-# app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SECRET_KEY'] = os.urandom(24)
 # 設定session key
-app.secret_key = "Hello World"
+# app.secret_key = "Hello World"
 # csrf = CSRFProtect(app)
 
 
