@@ -15,7 +15,6 @@ import secrets
 import os
 import pathlib
 import re
-from flask_wtf.csrf import CSRFProtect
 
 # 連接資料庫
 client = pymongo.MongoClient(
@@ -45,10 +44,9 @@ moment = Moment(app)
 # 設定session為24小時
 app.permanent_session_lifetime = timedelta(hours=24)
 # 設定scret_key為亂碼
-app.config['SECRET_KEY'] = os.urandom(24)
+# app.config['SECRET_KEY'] = os.urandom(24)
 # 設定session key
-# app.secret_key = "Hello World"
-# csrf = CSRFProtect(app)
+app.secret_key = "Hello World"
 
 
 
@@ -65,7 +63,6 @@ def signuppage():
 
 @app.route("/signup", methods=["POST"])
 def signup():
-    # csrf.validate(request.form.get('csrf_token'))
     student_id = request.form['student_id']
     password = request.form['password']
     # email = request.form['email']
@@ -91,7 +88,6 @@ def signup():
 #登入route
 @app.route("/signin", methods=["POST"])
 def signin():
-    # csrf.validate(request.form.get('csrf_token'))
     student_id = request.form["student_id"]
     password = request.form["password"]
     # 和資料庫做互動
@@ -218,12 +214,13 @@ def get_progress(form_id):
 # 表單驗證、儲存
 @app.route('/submit_form',methods=["POST"])
 def submit_form():
-    # csrf.validate(request.form.get('csrf_token'))
 
     twtime = pytz.timezone('Asia/Taipei')
-    submit_at = datetime.now(twtime)
-    # submit_at = twtime.strftime("%Y.%m.%d %H:%M:%S")
-
+    submit_at = datetime.today()
+    print(submit_at)
+    # Convert to Taipei timezone before inserting into the database
+    submit_at_taipei = submit_at.astimezone(twtime)
+    # submit_at_str = submit_at.strftime("%Y.%m.%d %H:%M:%S")
     random_name = ""  # 默認值
 
     file = request.files['image']
@@ -271,11 +268,15 @@ def submit_form():
             "status": "待確認",
             "submit_at": submit_at,
             "progress_explain": progress_explain,
-            "image": random_name
+            "image": random_name,
+            "update_at": submit_at,
+            "fixing_update_at": '',
+            "finish_update_at": '',
         })
 
     # 刪除資料用
-    #     collection = db.forms
+    # collection = db.forms
+    # result = collection.delete_many({"name": {"$exists": True}})
     #     result = collection.delete_many({
     #         "name": "林東科"
     # })
@@ -295,7 +296,6 @@ def manager_signin_page():
 
 @app.route("/manager_signin", methods=["POST"])
 def manager_signin():
-    # csrf.validate(request.form.get('csrf_token'))
     account = request.form["account"]
     password = request.form["password"]
     # 和資料庫做互動
@@ -403,20 +403,42 @@ def manager_tesk_info(_id):
 # 管理者的維修表單編輯
 @app.route("/manager/tesk_update/<_id>",methods=['POST'])
 def manager_tesk_update(_id):
-    # csrf.validate(request.form.get('csrf_token'))
     # collection = db.forms
     _id = ObjectId(_id)
     # form_info = collection.find_one({"_id": _id})
     filter = {"_id": _id}
     
     twtime = pytz.timezone('Asia/Taipei')
-    update_at = datetime.now(twtime)
+    update_at = datetime.today()
 
-    # print(request.form.get("other_fix_items"))
+    # print(update_at)
     # 進度說明預設為空
     status = request.form["status"]
     progress_explain = request.form["progress_explain"]
     manager_name = session['manager_name']
+
+    # print(status)
+    # print(request.form["status"])
+    result = db.forms.find_one({"_id": _id})
+
+    finish_update_at_value = ''
+    fixing_update_at_value = ''
+    # Check if the document exists and contains the finish_update_at field
+    if result and "fixing_update_at" in result:
+        fixing_update_at_value = result["fixing_update_at"]
+    if result and "finish_update_at" in result:
+        finish_update_at_value = result["finish_update_at"]
+    
+    # 找到這項
+    if status == '處理中':
+        fixing_update_at = datetime.today()
+        finish_update_at = finish_update_at_value
+    elif status == "已完成":
+        finish_update_at = datetime.today()
+        fixing_update_at = fixing_update_at_value
+        
+    print(finish_update_at)
+    print(fixing_update_at)
 
     update_data = {
     "$set": {
@@ -424,6 +446,8 @@ def manager_tesk_update(_id):
         "status": status,
         "update_at": update_at,
         "progress_explain": progress_explain,
+        "fixing_update_at": fixing_update_at,
+        "finish_update_at": finish_update_at,
         }
     }
     # 用_id塞選後將資料放入
@@ -440,7 +464,6 @@ def manager_tesk_update(_id):
 @app.route("/manager/announcement",methods=['GET'])
 def manager_announcement():
     collection = db.announcements    
-    print(session.get("name"))
     keyword = request.args.get("keyword", '')
     # print(keyword)
     # 創建初始的查詢條件，這裡假設 dorm 和 status 都是列表
@@ -467,7 +490,7 @@ def manager_announcement():
     else:
         query["status"] = {"$in": status}
 
-    announcement_list = list(collection.find(query).sort("submit_at", pymongo.DESCENDING))
+    announcement_list = list(collection.find(query).sort("created_at", pymongo.DESCENDING))
     
     # print(anncouncement_list)
     # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
@@ -511,16 +534,15 @@ def manager_announcement_add():
 # 管理者新增公告_POST
 @app.route("/manager/announcement/add/submit",methods=['POST'])
 def manager_announcement_add_submit():
-    # csrf.validate(request.form.get('csrf_token'))
     twtime = pytz.timezone('Asia/Taipei')
-    created_at = datetime.now(twtime)
-
+    created_at = datetime.today()
+    # print(created_at)
     
-    creator = session['name']
+    creator = session['manager_name']
     title = request.form["title"]
     content = request.form["content"]
     status = request.form["status"]
-    is_top = request.form["is_top"]
+    is_top = request.form.get('is_top', 'off')
 
     announcements = db.announcements
     announcements.insert_one({
@@ -532,6 +554,11 @@ def manager_announcement_add_submit():
         "created_at": created_at,
         "updated_at": created_at,
     })
+    # 刪除資料用
+    #     collection = db.announcements
+    #     result = collection.delete_many({
+    #         "name": "柏安"
+    # })
 
     return redirect("/manager/announcement")
 
@@ -563,19 +590,19 @@ def manager_announcement_edit(_id):
 # 管理者的公告編輯_POST
 @app.route("/manager/announcement/edit/<_id>/post",methods=['POST'])
 def manager_announcement_edit_post(_id):
-    # csrf.validate(request.form.get('csrf_token'))
     _id = ObjectId(_id)
     filter = {"_id": _id}
+    announcement = db.announcements
 
     twtime = pytz.timezone('Asia/Taipei')
-    updated_at = datetime.now(twtime)
+    updated_at = datetime.today()
 
     # title,content,status,is_top = ''
     # creator = session['name']
     title = request.form["title"]
     content = request.form["content"]
     status = request.form["status"]
-    is_top = request.form["is_top"]
+    is_top = request.form.get('is_top', 'off')
 
     update_data = {
     "$set": {
@@ -589,8 +616,8 @@ def manager_announcement_edit_post(_id):
         }
     }
     # 用_id塞選後將資料放入
-    forms = db.announcements
-    forms.update_one(filter, update_data)
+    
+    announcement.update_one(filter, update_data)
 
     return redirect("/manager/announcement")
 
@@ -598,7 +625,6 @@ def manager_announcement_edit_post(_id):
 # 管理員註冊
 @app.route("/manager_signup", methods=["POST"])
 def manager_signup():
-    # csrf.validate(request.form.get('csrf_token'))
     manager_name = request.form['manager_name']
     account = request.form['account']
     password = request.form['password']
@@ -651,8 +677,8 @@ def manager_signout():
 
 #     collection.insert_one({
 #         "manager_name": '柏安',
-#         "account": 'a109510388',
-#         "password": '123456',
+#         "account": 'test',
+#         "password": 'test',
 #     })
 #     return redirect("/")
 

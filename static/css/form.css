@@ -23,6 +23,15 @@ header{
 footer{
     padding-bottom: 62px;
 }
+.announcement-content {
+    max-height: 3em; /* You can adjust the height based on your font size and line height */
+    overflow: hidden;
+}
+
+.announcement-content p {
+    margin-bottom: 0;
+    opacity: 0.75;
+}
 .progress-scoller{
     display: grid;
     gap: 20px;

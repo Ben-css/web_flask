@@ -47,7 +47,9 @@
                             <div class="d-flex gap-2 w-100 justify-content-between">
                                 <div>
                                     <h5 class="mb-0">{{ announcements.title }}</h5>
-                                    <p class="mb-0 opacity-75">{{ announcements.content }}</p>
+                                    <div class="announcement-content">
+                                        <p class="mb-0 opacity-75">{{ announcements.content }}</p>
+                                    </div>
                                 </div>
                                 <small class="opacity-50 text-nowrap">{{ announcements.created_at.strftime('%Y/%m/%d') }}</small>
                             </div>
@@ -83,7 +85,15 @@
                             </legend>
                             <h6 class="card-subtitle mb-2 text-muted">{{ progress.status }}</h6>
                             <!-- TODO:最後更新時間要是動態的 -->
-                            <p class="card-text">提交時間: {{ progress.submit_at.strftime('%Y/%m/%d %H:%M') }}<br>最後更新時間:2023/05/10 20:57:53</p>
+                            <p class="card-text">提交時間: {{ progress.submit_at.strftime('%Y/%m/%d %H:%M') }}<br>
+                                最後更新時間:
+                                {% if progress.finish_update_at != '' %}
+                                    {{ progress.finish_update_at.strftime('%Y/%m/%d %H:%M') }}
+                                {% elif progress.fixing_update_at != '' %}
+                                    {{ progress.fixing_update_at.strftime('%Y/%m/%d %H:%M') }}
+                                {% else %}
+                                    {{ progress.update_at.strftime('%Y/%m/%d %H:%M') }}
+                                {% endif %}</p>
                             <a href="/tesk_info/{{ progress["_id"] }}" class="btn btn-primary">詳情</a>
                         </div>
                     </div>
