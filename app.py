@@ -320,306 +320,312 @@ def manager_signin():
 @app.route("/manager/page",methods=['GET'])
 def manager_page():
     # personal_info = db.managers
-    collection = db.forms    
-    # form_list =  list(collection.find().sort("submit_at", pymongo.DESCENDING))
+    if "manager_name" in session:
+        collection = db.forms    
+        # form_list =  list(collection.find().sort("submit_at", pymongo.DESCENDING))
 
-    # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
-        
-    dorm = request.args.getlist("dorm")
-    status = request.args.getlist("status")
-    start_at = request.args.get("start_at",'')
-    end_at = request.args.get("end_at",'')
+        # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
+            
+        dorm = request.args.getlist("dorm")
+        status = request.args.getlist("status")
+        start_at = request.args.get("start_at",'')
+        end_at = request.args.get("end_at",'')
 
-    # 創建初始的查詢條件，這裡假設 dorm 和 status 都是列表
-    query = {}
+        # 創建初始的查詢條件，這裡假設 dorm 和 status 都是列表
+        query = {}
 
-    # 添加 dorm 的篩選條件
-    if "all_dorms" in dorm or dorm == []:
-        # 不需要進一步處理其他宿舍的條件
-        pass
+        # 添加 dorm 的篩選條件
+        if "all_dorms" in dorm or dorm == []:
+            # 不需要進一步處理其他宿舍的條件
+            pass
+        else:
+            query["dorms"] = {"$in": dorm}
+
+        # 添加 status 的篩選條件
+        if "all_status" in status or status == []:
+            # 不需要進一步處理其他狀態的條件
+            pass
+        else:
+            query["status"] = {"$in": status}
+
+        # 添加 start_at 和 end_at 的篩選條件
+        if start_at != '' and end_at != '':
+            start_date = datetime.strptime(start_at, "%Y-%m-%d")
+            end_date = datetime.strptime(end_at, "%Y-%m-%d")
+            query["submit_at"] = {"$gte": start_date, "$lte": end_date}
+
+        # 查詢並排序
+        form_list = list(collection.find(query).sort("submit_at", pymongo.DESCENDING))
+
+        for student in form_list:
+            student["_id"] = str(student["_id"])
+
+        return render_template('manager_page.html',
+            form_list =  form_list,
+            dorm = dorm,
+            status = status,
+            start_at = start_at,
+            end_at = end_at
+            )
     else:
-        query["dorms"] = {"$in": dorm}
-
-    # 添加 status 的篩選條件
-    if "all_status" in status or status == []:
-        # 不需要進一步處理其他狀態的條件
-        pass
-    else:
-        query["status"] = {"$in": status}
-
-    # 添加 start_at 和 end_at 的篩選條件
-    if start_at != '' and end_at != '':
-        start_date = datetime.strptime(start_at, "%Y-%m-%d")
-        end_date = datetime.strptime(end_at, "%Y-%m-%d")
-        query["submit_at"] = {"$gte": start_date, "$lte": end_date}
-
-    # 查詢並排序
-    form_list = list(collection.find(query).sort("submit_at", pymongo.DESCENDING))
-
-    for student in form_list:
-        student["_id"] = str(student["_id"])
-
-    # print(dorm)
-    # print(status)
-    # print(start_at)
-    # print(end_at)
-    # fix_explain = request.form["fix_explain"]
-    # result = collection.find_one({
-    #     "$and": [
-    #         {"account":  session["account"]},
-    #         {"password": session["manager_name"]},
-    #     ]
-    # })
-    # if result == None:
-    #     return redirect("/error?msg=未進行登入，請登入")
-    return render_template('manager_page.html',
-                            form_list =  form_list,
-                            dorm = dorm,
-                            status = status,
-                            start_at = start_at,
-                            end_at = end_at
-                            )
+        return redirect("/error?msg=未進行登入，請登入")
 
 @app.route("/manager/tesk_info/<_id>",methods=['GET'])
 def manager_tesk_info(_id):
-    collection = db.forms
-    _id = ObjectId(_id)
-    form_info = collection.find_one({"_id": _id})
-    # print(bool(collection.find_one({"_id": _id})))
-    # print(type(_id))
-    # for student in form_list:
-    form_info["_id"] = str(form_info["_id"])
+    if "manager_name" in session:
+        collection = db.forms
+        _id = ObjectId(_id)
+        form_info = collection.find_one({"_id": _id})
+        # print(bool(collection.find_one({"_id": _id})))
+        # print(type(_id))
+        # for student in form_list:
+        form_info["_id"] = str(form_info["_id"])
 
-    # print(form_list)
-    return render_template("/manager_tesk_info.html",
-    #    form=form,
-        # name=session.get('name'),
-        # student_id=session.get('student_id'),
-        form_info = form_info,
-        )
-    # else:
-    #     return redirect("/error?msg=未進行登入，請先登入")
+        # print(form_list)
+        return render_template("/manager_tesk_info.html",
+        #    form=form,
+            # name=session.get('name'),
+            # student_id=session.get('student_id'),
+            form_info = form_info,
+            )
+    else:
+        return redirect("/error?msg=未進行登入，請先登入")
 
 # 管理者的維修表單編輯
 @app.route("/manager/tesk_update/<_id>",methods=['POST'])
 def manager_tesk_update(_id):
-    # collection = db.forms
-    _id = ObjectId(_id)
-    # form_info = collection.find_one({"_id": _id})
-    filter = {"_id": _id}
-    
-    twtime = pytz.timezone('Asia/Taipei')
-    update_at = datetime.today()
-
-    # print(update_at)
-    # 進度說明預設為空
-    status = request.form["status"]
-    progress_explain = request.form["progress_explain"]
-    manager_name = session['manager_name']
-
-    # print(status)
-    # print(request.form["status"])
-    result = db.forms.find_one({"_id": _id})
-
-    finish_update_at_value = ''
-    fixing_update_at_value = ''
-    # Check if the document exists and contains the finish_update_at field
-    if result and "fixing_update_at" in result:
-        fixing_update_at_value = result["fixing_update_at"]
-    if result and "finish_update_at" in result:
-        finish_update_at_value = result["finish_update_at"]
-    
-    # 找到這項
-    if status == '處理中':
-        fixing_update_at = datetime.today()
-        finish_update_at = finish_update_at_value
-    elif status == "已完成":
-        finish_update_at = datetime.today()
-        fixing_update_at = fixing_update_at_value
+    if "manager_name" in session:
+        # collection = db.forms
+        _id = ObjectId(_id)
+        # form_info = collection.find_one({"_id": _id})
+        filter = {"_id": _id}
         
-    print(finish_update_at)
-    print(fixing_update_at)
+        twtime = pytz.timezone('Asia/Taipei')
+        update_at = datetime.today()
 
-    update_data = {
-    "$set": {
-        "manager_name": manager_name,
-        "status": status,
-        "update_at": update_at,
-        "progress_explain": progress_explain,
-        "fixing_update_at": fixing_update_at,
-        "finish_update_at": finish_update_at,
+        # print(update_at)
+        # 進度說明預設為空
+        status = request.form["status"]
+        progress_explain = request.form["progress_explain"]
+        manager_name = session['manager_name']
+
+        # print(status)
+        # print(request.form["status"])
+        result = db.forms.find_one({"_id": _id})
+
+        finish_update_at_value = ''
+        fixing_update_at_value = ''
+        # Check if the document exists and contains the finish_update_at field
+        if result and "fixing_update_at" in result:
+            fixing_update_at_value = result["fixing_update_at"]
+        if result and "finish_update_at" in result:
+            finish_update_at_value = result["finish_update_at"]
+        
+        # 找到這項
+        if status == '處理中':
+            fixing_update_at = datetime.today()
+            finish_update_at = finish_update_at_value
+        elif status == "已完成":
+            finish_update_at = datetime.today()
+            fixing_update_at = fixing_update_at_value
+            
+        print(finish_update_at)
+        print(fixing_update_at)
+
+        update_data = {
+        "$set": {
+            "manager_name": manager_name,
+            "status": status,
+            "update_at": update_at,
+            "progress_explain": progress_explain,
+            "fixing_update_at": fixing_update_at,
+            "finish_update_at": finish_update_at,
+            }
         }
-    }
-    # 用_id塞選後將資料放入
-    forms = db.forms
-    forms.update_one(filter, update_data)
+        # 用_id塞選後將資料放入
+        forms = db.forms
+        forms.update_one(filter, update_data)
 
-    # str_id = str(_id)
-    redirect_url = url_for('manager_tesk_info', _id=_id)
-    return redirect(redirect_url)
-    # else:
-    #     return redirect("/error?msg=未進行登入，請先登入")
+        # str_id = str(_id)
+        redirect_url = url_for('manager_tesk_info', _id=_id)
+        return redirect(redirect_url)
+    else:
+        return redirect("/error?msg=未進行登入，請先登入")
 
 # 管理者的公告管理
 @app.route("/manager/announcement",methods=['GET'])
 def manager_announcement():
-    collection = db.announcements    
-    keyword = request.args.get("keyword", '')
-    # print(keyword)
-    # 創建初始的查詢條件，這裡假設 dorm 和 status 都是列表
-    query = {}
-    if keyword != '':
-        regex_pattern = re.compile(f".*{re.escape(keyword)}.*", re.IGNORECASE)
-        query = {
-            "$or": [
-                {"creator": {"$regex": regex_pattern}},
-                {"title": {"$regex": regex_pattern}},
-            ]
-        }
-        # print(query) 
-        # announcement_list = list(collection.find(query).sort("created_at", pymongo.DESCENDING))
-    # else:
-        # announcement_list =  list(collection.find().sort("created_at", pymongo.DESCENDING))
-    
-    status = request.args.getlist("status")
-    print(status)
-    # 添加 status 的篩選條件
-    if "all_status" in status or status == []:
-        # 不需要進一步處理其他狀態的條件
-        pass
+    if "manager_name" in session:
+        collection = db.announcements    
+        keyword = request.args.get("keyword", '')
+        # print(keyword)
+        # 創建初始的查詢條件，這裡假設 dorm 和 status 都是列表
+        query = {}
+        if keyword != '':
+            regex_pattern = re.compile(f".*{re.escape(keyword)}.*", re.IGNORECASE)
+            query = {
+                "$or": [
+                    {"creator": {"$regex": regex_pattern}},
+                    {"title": {"$regex": regex_pattern}},
+                ]
+            }
+            # print(query) 
+            # announcement_list = list(collection.find(query).sort("created_at", pymongo.DESCENDING))
+        # else:
+            # announcement_list =  list(collection.find().sort("created_at", pymongo.DESCENDING))
+        
+        status = request.args.getlist("status")
+        print(status)
+        # 添加 status 的篩選條件
+        if "all_status" in status or status == []:
+            # 不需要進一步處理其他狀態的條件
+            pass
+        else:
+            query["status"] = {"$in": status}
+
+        announcement_list = list(collection.find(query).sort("created_at", pymongo.DESCENDING))
+        
+        # print(anncouncement_list)
+        # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
+
+        # other_fix_items = request.form.get("other_fix_items",'')
+
+        for annc in announcement_list:
+            annc["_id"] = str(annc["_id"])
+
+        return render_template('manager_announcement.html',
+                announcement_list = announcement_list,
+                keyword = keyword,
+                status = status               
+                )
     else:
-        query["status"] = {"$in": status}
-
-    announcement_list = list(collection.find(query).sort("created_at", pymongo.DESCENDING))
-    
-    # print(anncouncement_list)
-    # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
-
-    # other_fix_items = request.form.get("other_fix_items",'')
-
-    for annc in announcement_list:
-        annc["_id"] = str(annc["_id"])
-
-    return render_template('manager_announcement.html',
-            announcement_list = announcement_list,
-            keyword = keyword,
-            status = status               
-            )
+        return redirect("/error?msg=未進行登入，請先登入")
 
 # 管理者新增公告頁
 @app.route("/manager/announcement/add",methods=['GET'])
 def manager_announcement_add():
-    # collection = db.announcements    
-    # announcement_list =  list(collection.find().sort("created_at", pymongo.DESCENDING))
-    # print(anncouncement_list)
-    # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
-        
-    # for annc in announcement_list:
-    #     annc["_id"] = str(annc["_id"])
-    current_url = request.url
+    if "manager_name" in session:
+        # collection = db.announcements    
+        # announcement_list =  list(collection.find().sort("created_at", pymongo.DESCENDING))
+        # print(anncouncement_list)
+        # form = collection.find_one({"_id": ObjectId(form_id), "student_id": student_id})
+            
+        # for annc in announcement_list:
+        #     annc["_id"] = str(annc["_id"])
+        current_url = request.url
 
-    # 檢查 URL 是否包含 "add" 或 "edit"
-    if "add" in current_url:
-        title = "新增文章"
-    elif "edit" in current_url:
-        title = "編輯文章"
+        # 檢查 URL 是否包含 "add" 或 "edit"
+        if "add" in current_url:
+            title = "新增文章"
+        elif "edit" in current_url:
+            title = "編輯文章"
 
-    action = "/manager/announcement/add/submit"
+        action = "/manager/announcement/add/submit"
 
-    return render_template('manager_announcement_edit.html',
-            title = title,
-            action = action               
-            )
+        return render_template('manager_announcement_edit.html',
+                title = title,
+                action = action)
+    else:
+        return redirect("/error?msg=未進行登入，請先登入")
 
 # 管理者新增公告_POST
 @app.route("/manager/announcement/add/submit",methods=['POST'])
 def manager_announcement_add_submit():
-    twtime = pytz.timezone('Asia/Taipei')
-    created_at = datetime.today()
-    # print(created_at)
-    
-    creator = session['manager_name']
-    title = request.form["title"]
-    content = request.form["content"]
-    status = request.form["status"]
-    is_top = request.form.get('is_top', 'off')
+    if "manager_name" in session:
+        twtime = pytz.timezone('Asia/Taipei')
+        created_at = datetime.today()
+        # print(created_at)
+        
+        creator = session['manager_name']
+        title = request.form["title"]
+        content = request.form["content"]
+        status = request.form["status"]
+        is_top = request.form.get('is_top', 'off')
 
-    announcements = db.announcements
-    announcements.insert_one({
-        "title": title,
-        "content": content,
-        "creator": creator,
-        "status": status,
-        "is_top": is_top,
-        "created_at": created_at,
-        "updated_at": created_at,
-    })
-    # 刪除資料用
-    #     collection = db.announcements
-    #     result = collection.delete_many({
-    #         "name": "柏安"
-    # })
+        announcements = db.announcements
+        announcements.insert_one({
+            "title": title,
+            "content": content,
+            "creator": creator,
+            "status": status,
+            "is_top": is_top,
+            "created_at": created_at,
+            "updated_at": created_at,
+        })
+        # 刪除資料用
+        #     collection = db.announcements
+        #     result = collection.delete_many({
+        #         "name": "柏安"
+        # })
 
-    return redirect("/manager/announcement")
+        return redirect("/manager/announcement")
+    else:
+        return redirect("/error?msg=未進行登入，請先登入")
 
 # 管理者的公告編輯
 @app.route("/manager/announcement/edit/<_id>",methods=['GET'])
 def manager_announcement_edit(_id):
-    collection = db.announcements
-    _id = ObjectId(_id)
-    announcement_info = collection.find_one({"_id": _id})
-    # print(bool(collection.find_one({"_id": _id})))
-    # print(type(_id))
-    # for student in form_list:
-    announcement_info["_id"] = str(announcement_info["_id"])
+    if "manager_name" in session:
+        collection = db.announcements
+        _id = ObjectId(_id)
+        announcement_info = collection.find_one({"_id": _id})
+        # print(bool(collection.find_one({"_id": _id})))
+        # print(type(_id))
+        # for student in form_list:
+        announcement_info["_id"] = str(announcement_info["_id"])
 
-    current_url = request.url
-    # 檢查 URL 是否包含 "add" 或 "edit"
-    if "add" in current_url:
-        title = "新增文章"
-    elif "edit" in current_url:
-        title = "編輯文章"
-    
-    action = "/manager/announcement/edit/"+str(_id)+"/post"
+        current_url = request.url
+        # 檢查 URL 是否包含 "add" 或 "edit"
+        if "add" in current_url:
+            title = "新增文章"
+        elif "edit" in current_url:
+            title = "編輯文章"
+        
+        action = "/manager/announcement/edit/"+str(_id)+"/post"
 
-    return render_template('manager_announcement_edit.html',
-            announcement_info = announcement_info,
-            title = title,
-            action = action )
+        return render_template('manager_announcement_edit.html',
+                announcement_info = announcement_info,
+                title = title,
+                action = action)
+    else:
+        return redirect("/error?msg=未進行登入，請先登入")
 
 # 管理者的公告編輯_POST
 @app.route("/manager/announcement/edit/<_id>/post",methods=['POST'])
 def manager_announcement_edit_post(_id):
-    _id = ObjectId(_id)
-    filter = {"_id": _id}
-    announcement = db.announcements
+    if "manager_name" in session:
+        _id = ObjectId(_id)
+        filter = {"_id": _id}
+        announcement = db.announcements
 
-    twtime = pytz.timezone('Asia/Taipei')
-    updated_at = datetime.today()
+        twtime = pytz.timezone('Asia/Taipei')
+        updated_at = datetime.today()
 
-    # title,content,status,is_top = ''
-    # creator = session['name']
-    title = request.form["title"]
-    content = request.form["content"]
-    status = request.form["status"]
-    is_top = request.form.get('is_top', 'off')
+        # title,content,status,is_top = ''
+        # creator = session['name']
+        title = request.form["title"]
+        content = request.form["content"]
+        status = request.form["status"]
+        is_top = request.form.get('is_top', 'off')
 
-    update_data = {
-    "$set": {
-        "title": title,
-        "content": content,
-        # "creator": creator,
-        "status": status,
-        "is_top": is_top,
-        # "created_at": created_at,
-        "updated_at": updated_at,
+        update_data = {
+        "$set": {
+            "title": title,
+            "content": content,
+            # "creator": creator,
+            "status": status,
+            "is_top": is_top,
+            # "created_at": created_at,
+            "updated_at": updated_at,
+            }
         }
-    }
-    # 用_id塞選後將資料放入
-    
-    announcement.update_one(filter, update_data)
+        # 用_id塞選後將資料放入
+        
+        announcement.update_one(filter, update_data)
 
-    return redirect("/manager/announcement")
+        return redirect("/manager/announcement")
+    else:
+        return redirect("/error?msg=未進行登入，請先登入")
 
 
 # 管理員註冊

@@ -48,7 +48,7 @@
                     </svg>
                     <div class="step-info">
                         <h5>已提交</h5>
-                        <small>{{ form.submit_at.strftime('%Y年%m月%d日') }}</small>
+                        <small>{{ form.submit_at.strftime('%Y年%m月%d日 %H:%M') }}</small>
                     </div>
                     
                 </div>
@@ -61,7 +61,7 @@
                     <div class="step-info">
                         <h5>處理中</h5>
                         {% if form.fixing_update_at != '' %}
-                            <small>{{ form.fixing_update_at.strftime('%Y年%m月%d日') }}</small>
+                            <small>{{ form.fixing_update_at.strftime('%Y年%m月%d日 %H:%M') }}</small>
                         {% else %}
                             <small></small>
                         {% endif %}
@@ -77,7 +77,7 @@
                     <div class="step-info">
                         <h5>已完成</h5>
                         {% if form.finish_update_at != '' %}
-                            <small>{{ form.finish_update_at.strftime('%Y年%m月%d日') }}</small>
+                            <small>{{ form.finish_update_at.strftime('%Y年%m月%d日 %H:%M') }}</small>
                         {% else %}
                             <small></small>
                         {% endif %}
