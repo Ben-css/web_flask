@@ -60,6 +60,10 @@ def index():
 def signuppage():
     return render_template("signup.html")
 
+@app.route("/page/forgetPassword")
+def forgetPassword_page():
+    return render_template("forgetPassword.html")
+
 
 @app.route("/signup", methods=["POST"])
 def signup():
@@ -74,7 +78,7 @@ def signup():
         "student_id": student_id
     })
     if result != None:
-        return redirect("/error?msg=信箱已被註冊")
+        return redirect("/error?msg=學號已被註冊")
 
     collection.insert_one({
         "student_id": student_id,
