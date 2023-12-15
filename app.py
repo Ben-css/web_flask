@@ -395,58 +395,57 @@ def manager_tesk_info(_id):
 @app.route("/manager/tesk_update/<_id>",methods=['POST'])
 def manager_tesk_update(_id):
     if "manager_name" in session:
-        # collection = db.forms
         _id = ObjectId(_id)
-        # form_info = collection.find_one({"_id": _id})
-        filter = {"_id": _id}
-        
-        twtime = pytz.timezone('Asia/Taipei')
-        update_at = datetime.today()
 
-        # print(update_at)
         # 進度說明預設為空
         status = request.form["status"]
         progress_explain = request.form["progress_explain"]
         manager_name = session['manager_name']
 
-        # print(status)
-        # print(request.form["status"])
         result = db.forms.find_one({"_id": _id})
 
-        finish_update_at_value = ''
-        fixing_update_at_value = ''
-        # Check if the document exists and contains the finish_update_at field
-        if result and "fixing_update_at" in result:
-            fixing_update_at_value = result["fixing_update_at"]
-        if result and "finish_update_at" in result:
-            finish_update_at_value = result["finish_update_at"]
-        
         # 找到這項
-        if status == '處理中':
-            fixing_update_at = datetime.today()
-            finish_update_at = finish_update_at_value
-        elif status == "已完成":
-            finish_update_at = datetime.today()
-            fixing_update_at = fixing_update_at_value
-            
-        print(finish_update_at)
-        print(fixing_update_at)
+        if status == '處理中' or status == '已完成':
+            finish_update_at_value = ''
+            fixing_update_at_value = ''
 
-        update_data = {
-        "$set": {
-            "manager_name": manager_name,
-            "status": status,
-            "update_at": update_at,
-            "progress_explain": progress_explain,
-            "fixing_update_at": fixing_update_at,
-            "finish_update_at": finish_update_at,
+            # Check if the document exists and contains the finish_update_at field
+            if result and "fixing_update_at" in result:
+                fixing_update_at_value = result["fixing_update_at"]
+            if result and "finish_update_at" in result:
+                finish_update_at_value = result["finish_update_at"]
+
+            if status == '處理中':
+                fixing_update_at = datetime.today()
+                finish_update_at = finish_update_at_value
+            elif status == '已完成':
+                finish_update_at = datetime.today()
+                fixing_update_at = fixing_update_at_value
+
+            update_data = {
+                "$set": {
+                    "manager_name": manager_name,
+                    "status": status,
+                    "update_at": datetime.today(),
+                    "progress_explain": progress_explain,
+                    "fixing_update_at": fixing_update_at,
+                    "finish_update_at": finish_update_at,
+                }
             }
-        }
-        # 用_id塞選後將資料放入
-        forms = db.forms
-        forms.update_one(filter, update_data)
+        else:
+            # 如果 status 不是 '處理中' 或 '已完成'，則不修改 fixing_update_at 和 finish_update_at
+            update_data = {
+                "$set": {
+                    "manager_name": manager_name,
+                    "status": status,
+                    "update_at": datetime.today(),
+                    "progress_explain": progress_explain,
+                }
+            }
 
-        # str_id = str(_id)
+        forms = db.forms
+        forms.update_one({"_id": _id}, update_data)
+
         redirect_url = url_for('manager_tesk_info', _id=_id)
         return redirect(redirect_url)
     else:
