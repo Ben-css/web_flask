@@ -64,7 +64,6 @@ def signuppage():
 def forgetPassword_page():
     return render_template("forgetPassword.html")
 
-
 @app.route("/signup", methods=["POST"])
 def signup():
     student_id = request.form['student_id']
@@ -128,7 +127,30 @@ def member():
     else:
         return redirect("/")
     
-# 公告
+# 公告 
+@app.route("/announcement_list",methods=["GET"])
+def announcement_list():
+    # form = MyForm()
+    if "student_id" in session:
+        collection = db.announcements
+
+        query = {}
+        query["status"] = {"$in": ['上架']}
+
+        announcements = list(collection.find(query).sort("created_at", pymongo.DESCENDING))
+        
+        for annc in announcements:
+            annc["_id"] = str(annc["_id"])
+        
+        return render_template("announcement_list.html",
+            name=session.get('name'),
+            student_id=session.get('student_id'),
+            announcements = announcements,
+            )
+    else:
+        return redirect("/error?msg=未進行登入，請先登入")    
+
+
 @app.route("/announcement/<_id>",methods=["GET"])
 def announcement(_id):
     # form = MyForm()

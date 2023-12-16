@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}所有公告{% endblock %}
+{% block content %}
+<section id="news">
+    <div class="container px-3">
+        <h2>所有公告</h2>
+        <div class="d-flex flex-column flex-md-row p-4 gap-4 align-items-center justify-content-center">
+            <div class="list-group col-12 col-md-8">
+                {% for announcement in announcements %}
+                    <a href="/announcement/{{ announcement["_id"] }}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                        <div class="d-flex gap-2 w-100 justify-content-between">
+                            <div>
+                                <h5 class="mb-0">{{ announcement.title }}</h5>
+                                <div class="announcement-content">
+                                    <p class="mb-0 opacity-75">{{ announcement.content }}</p>
+                                </div>
+                            </div>
+                            <small class="opacity-50 text-nowrap">{{ announcement.created_at.strftime('%Y/%m/%d') }}</small>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
