@@ -18,3 +18,10 @@
 .main-contect {
     margin-left: 280px;
 }
+
+@media (max-width: 767.98px) { 
+    .main-contect {
+        margin-top: 74px;
+        margin-left: auto;
+    }
+}
