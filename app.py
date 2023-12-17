@@ -223,7 +223,7 @@ def get_progress(form_id):
     # for student in form_list:
     #     student["_id"] = str(student["_id"])
 
-    # footer_img = 'dorm_logo_black.png'
+    # footer_img = '/img/dorm_logo_black.png'
 
     if form:
         return render_template("tesk_info.html",
