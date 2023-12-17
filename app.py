@@ -378,6 +378,9 @@ def manager_page():
         if start_at != '' and end_at != '':
             start_date = datetime.strptime(start_at, "%Y-%m-%d")
             end_date = datetime.strptime(end_at, "%Y-%m-%d")
+            # 將開始時間設成0:00，結束時間設成23:59
+            start_date = start_date.replace(hour=0, minute=0, second=0)
+            end_date = end_date.replace(hour=23, minute=59, second=59)
             query["submit_at"] = {"$gte": start_date, "$lte": end_date}
 
         # 查詢並排序
