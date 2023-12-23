@@ -2,7 +2,7 @@ from flask import *
 import pymongo
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
-from datetime import datetime,timedelta
+from datetime import datetime,timedelta,timezone
 from flask_wtf import FlaskForm
 from wtforms import (StringField, BooleanField, DateTimeField,
                      RadioField, SelectField,
@@ -15,6 +15,11 @@ import secrets
 import os
 import pathlib
 import re
+import pandas as pd
+import openpyxl
+from openpyxl.styles import Font           
+from openpyxl.styles import NamedStyle, PatternFill   
+
 
 # 連接資料庫
 client = pymongo.MongoClient(
@@ -242,10 +247,18 @@ def get_progress(form_id):
 def submit_form():
 
     twtime = pytz.timezone('Asia/Taipei')
-    submit_at = datetime.today()
-    print(submit_at)
-    # Convert to Taipei timezone before inserting into the database
-    submit_at_taipei = submit_at.astimezone(twtime)
+    # submit_at = datetime.today()
+    # print(submit_at)
+    
+    # 設定utc時區
+    utc_now = datetime.utcnow()
+    # 設定8小時
+    taipei_offset = timedelta(hours=8)
+
+    #加8小時
+    submit_at_taipei = utc_now.replace(tzinfo=timezone.utc) + taipei_offset
+
+    # print(submit_at_taipei)
     # submit_at_str = submit_at.strftime("%Y.%m.%d %H:%M:%S")
     random_name = ""  # 默認值
 
@@ -292,10 +305,10 @@ def submit_form():
             "other_fix_items": other_fix_items,
             "fix_explain": fix_explain,
             "status": "待確認",
-            "submit_at": submit_at,
+            "submit_at": submit_at_taipei,
             "progress_explain": progress_explain,
             "image": random_name,
-            "update_at": submit_at,
+            "update_at": submit_at_taipei,
             "fixing_update_at": '',
             "finish_update_at": '',
         })
@@ -399,6 +412,107 @@ def manager_page():
     else:
         return redirect("/error?msg=未進行登入，請登入")
 
+@app.route("/manager/excel_export", methods=['POST'])
+def manager_excel_export():
+    try:
+        data = request.get_json()
+        collection = db.forms
+        id_values = [ObjectId(value) for value in data.get('idValues', [])]
+
+        # 使用 sort 方法對查询结果進行排序
+        excel_list = list(collection.find({"_id": {"$in": id_values}}).sort("submit_at", pymongo.DESCENDING))
+        df = pd.DataFrame(excel_list)
+
+        # 映射英文列名和中文列名的字典
+        column_mapping = {
+            'student_id': '學號',
+            'name': '學生姓名',
+            'dorms': '棟別',
+            'location': '地點',
+            'location_detail': '詳細地點',
+            'fix_items': '維修項目',
+            'other_fix_items': '其他維修項目',
+            'fix_explain': '維修說明',
+            'submit_at': '繳交時間',
+            'image': '損壞圖片'
+        }
+
+        # 提取特定列的數据
+        selected_columns = list(column_mapping.keys())
+        df_selected = pd.DataFrame(df, columns=selected_columns)
+
+        # 重命名列名
+        df_selected.rename(columns=column_mapping, inplace=True)
+
+        # 生成當前时间的字符串，用作 Excel 文件名
+        current_time_str = datetime.now().strftime("%Y%m%d%H%M%S")
+        excel_filename = f"excel_output_{current_time_str}.xlsx"
+
+        # 指定資料夾
+        folder_path = 'download_excel'
+        os.makedirs(folder_path, exist_ok=True)  # 如果文件夹不存在，則創建文件夹
+
+        # 提供完整的路徑以保存 Excel 文件
+        full_path = os.path.join(folder_path, excel_filename)
+
+        # 使用 ExcelWriter 設置樣式
+        with pd.ExcelWriter(full_path, engine='openpyxl') as writer:
+            df_selected.to_excel(writer, index=True, sheet_name='Sheet1')
+
+            # 設定sheet 
+            sheet = writer.sheets['Sheet1']
+
+            # 將標題設為 淡藍色
+            # header_style = openpyxl.styles.NamedStyle(name='header_style', fill=openpyxl.styles.PatternFill(start_color='ADD8E6', end_color='ADD8E6', fill_type='solid'))
+            # for cell in sheet["1:1"]:
+            #     cell.style = header_style
+
+            # 設置欄寬
+            sheet.column_dimensions['A'].width = 5
+            sheet.column_dimensions['B'].width = 15
+            sheet.column_dimensions['C'].width = 10
+            sheet.column_dimensions['D'].width = 10
+            sheet.column_dimensions['E'].width = 10
+            sheet.column_dimensions['F'].width = 15
+            sheet.column_dimensions['G'].width = 15
+            sheet.column_dimensions['H'].width = 15
+            sheet.column_dimensions['I'].width = 25
+            sheet.column_dimensions['J'].width = 20
+            sheet.column_dimensions['K'].width = 40
+
+            # 設置行高
+            for row_num in range(1, sheet.max_row + 1):
+                sheet.row_dimensions[row_num].height = 25
+
+            # 設置標題樣式
+            title_style = openpyxl.styles.NamedStyle(name='header_style', fill=openpyxl.styles.PatternFill(start_color='ADD8E6', end_color='ADD8E6', fill_type='solid'))
+            title_style.font = openpyxl.styles.Font(bold=True)
+            title_style.alignment = openpyxl.styles.Alignment(horizontal='center', vertical='center')
+            title_style.border = openpyxl.styles.Border(left=openpyxl.styles.Side(style='thin'), right=openpyxl.styles.Side(style='thin'), top=openpyxl.styles.Side(style='thin'), bottom=openpyxl.styles.Side(style='thin'))
+
+            # 应用标题样式到每个单元格
+            for cell in sheet["1:1"]:
+                cell.style = title_style
+
+        # 返回重定向到下载链接的响应
+        download_link = url_for('download_excel', filename=excel_filename)
+        response = {'message': 'Data received successfully', 'excel_download_link': download_link}
+        # print(download_link)
+
+        # 直接重定向到下载链接
+        return redirect(download_link)
+    except Exception as e:
+        print(str(e))
+        return jsonify({'error': 'Internal Server Error'}), 500
+
+@app.route('/manager/download_excel/<filename>', methods=['GET'])
+def download_excel(filename):
+    folder_path = 'download_excel'
+    full_path = os.path.join(folder_path, filename)
+    # return redirect(filename)
+    return send_file(full_path, as_attachment=True, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', download_name=filename)
+
+# 管理者的維修單編輯
 @app.route("/manager/tesk_info/<_id>",methods=['GET'])
 def manager_tesk_info(_id):
     if "manager_name" in session:
@@ -420,7 +534,7 @@ def manager_tesk_info(_id):
     else:
         return redirect("/error?msg=未進行登入，請先登入")
 
-# 管理者的維修表單編輯
+# 管理者的維修表單更新
 @app.route("/manager/tesk_update/<_id>",methods=['POST'])
 def manager_tesk_update(_id):
     if "manager_name" in session:
@@ -561,8 +675,16 @@ def manager_announcement_add():
 def manager_announcement_add_submit():
     if "manager_name" in session:
         twtime = pytz.timezone('Asia/Taipei')
-        created_at = datetime.today()
+        # created_at = datetime.today()
         # print(created_at)
+
+        # 設定utc時區
+        utc_now = datetime.utcnow()
+        # 設定8小時
+        taipei_offset = timedelta(hours=8)
+
+        #加8小時
+        submit_at_taipei = utc_now.replace(tzinfo=timezone.utc) + taipei_offset
         
         creator = session['manager_name']
         title = request.form["title"]
@@ -577,8 +699,8 @@ def manager_announcement_add_submit():
             "creator": creator,
             "status": status,
             "is_top": is_top,
-            "created_at": created_at,
-            "updated_at": created_at,
+            "created_at": submit_at_taipei,
+            "updated_at": submit_at_taipei,
         })
         # 刪除資料用
         #     collection = db.announcements
@@ -627,7 +749,7 @@ def manager_announcement_edit_post(_id):
         announcement = db.announcements
 
         twtime = pytz.timezone('Asia/Taipei')
-        updated_at = datetime.today()
+        updated_at = datetime.now(twtime)
 
         # title,content,status,is_top = ''
         # creator = session['name']

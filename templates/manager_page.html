@@ -77,13 +77,16 @@
                 <button type="submit" class="btn btn-primary">篩選</button>
                 <!-- <button type="reset" class="btn btn-secondary">重置</button> -->
             </form>
+            <!-- <form action="excel_export" id="exportExcelButton" method="post"> -->
+                <button id="export-button" class="btn btn-primary" type="submit">輸出成excel</button>
+            <!-- </form> -->
         </div>    
         <hr>
         <div id="tesk-table">
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col"><input type="checkbox" class="" id="" autocomplete="off"></th>
+                        <th scope="col"><input type="checkbox" id="selectAllCheckbox" class="" autocomplete="off"><span>全選</span></th>
                         <th scope="col">棟別</th>
                         <th scope="col">姓名</th>
                         <th scope="col">維修項目</th>
@@ -94,7 +97,7 @@
                 </thead>
                 <tbody class="table-body">
                     {% for forms in form_list %}
-                    <!-- Check if the current date is different from the previous one -->
+                    <!-- 確認現在日期的月份是否不同於前一份資料 -->
                     {% if loop.index > 1 and forms.submit_at.year != form_list[loop.index - 2].submit_at.year or
                     forms.submit_at.month != form_list[loop.index - 2].submit_at.month %}
                         <tr>
@@ -105,7 +108,8 @@
                     {% endif %}
                         <tr>
                             <td><input type="checkbox" class="" id="" autocomplete="off"></td>
-                            <th scope="row">{{ forms.dorms }}</th>
+                            <td hidden>{{ forms._id }}</td>
+                            <td scope="row">{{ forms.dorms }}</td>
                             <td>{{ forms.name }}</td>
                             <td>
                             {% if forms.fix_items == '其他' %}
@@ -132,24 +136,5 @@
 </section>
 {% endblock %}
 {% block script %}
-<script>
-    function toggleCheckboxes(source) {
-        const checkboxes = document.querySelectorAll('.buildGroup');
-        checkboxes.forEach(checkbox => {
-            if (checkbox == source) {
-                checkbox.checked = false;
-            }
-        });
-    }
-
-    function updateCheckAll() {
-        const allCheckbox = document.getElementById('buildSelect1');
-        const checkboxes = document.querySelectorAll('.buildGroup');
-        
-        // Check if all checkboxes are checked
-        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-        
-        allCheckbox.checked = allChecked;
-    }
-</script>
+<script src="/js/manager_page.js" defer></script>
 {% endblock %}
