@@ -84,7 +84,7 @@
     pointer-events: none;
     transition: .5s;
 }
-.input-field .input:focus ~ label{
+/* .input-field .input:focus ~ label{
     top: -10px;
     font-size: 12px;
 }
@@ -95,7 +95,29 @@
 }
 .input-field .input:focus, .input-field .input:valid{
     border-bottom: 1px solid rgba(55, 175, 255, 0.2);
+} */
+.input-field .input:focus ~ label,
+.input-field .input ~ label {
+    top: -10px;
+    font-size: 12px;
 }
+
+.input-field .input:focus,
+.input-field .input {
+    border-bottom: 1px solid rgba(55, 175, 255, 0.2);
+}
+
+.error-message {
+    /* color: red; */
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
+}
+
+.input:invalid + .error-message {
+    display: block;
+}
+
 .submit{
     border: none;
     outline: none;

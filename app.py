@@ -119,18 +119,18 @@ def signin():
     return redirect("/form")
 
 # 會員頁(目前沒用)
-@app.route("/member")
-def member():
-    # form = MyForm()
-    # 如果student_id在session才能登入
-    if "student_id" in session:
-        return render_template("member.html",
-        #    form=form,
-            name=session.get('name'),
-            student_id=session.get('student_id'),         
-            )
-    else:
-        return redirect("/")
+# @app.route("/member")
+# def member():
+#     # form = MyForm()
+#     # 如果student_id在session才能登入
+#     if "student_id" in session:
+#         return render_template("member.html",
+#         #    form=form,
+#             name=session.get('name'),
+#             student_id=session.get('student_id'),         
+#             )
+#     else:
+#         return redirect("/")
     
 # 公告 
 @app.route("/announcement_list",methods=["GET"])
@@ -197,8 +197,11 @@ def form():
         announcements_list = announcements.find({"status": '上架'}).sort("created_at", pymongo.DESCENDING)
         # for anc in announcements_list:
         #     anc["_id"] = str(anc["_id"])
+        # with open('static/fix_items.json', 'r', encoding='UTF-8') as f:
+        #     fix_items_data = json.load(f)
 
         # print(form_list)
+        # print(fix_items_data)
         return render_template("form.html",
         #    form=form,
             name=session.get('name'),
@@ -777,33 +780,45 @@ def manager_announcement_edit_post(_id):
     else:
         return redirect("/error?msg=未進行登入，請先登入")
 
+# 管理者驗證
+@app.route("/admin", methods=["GET"])
+def admin():
+    return render_template("admin.html")
+
+# 管理員註冊頁
+@app.route("/manager_signup_page", methods=["POST"])
+def manager_signup_page():
+    verification = request.form['verification-code']
+    if verification == "99999999":
+        session["verification-code"] = verification
+        return render_template('manager_signup.html')
+    else:
+        return redirect("/admin?msg=驗證碼輸入錯誤")
 
 # 管理員註冊
 @app.route("/manager_signup", methods=["POST"])
 def manager_signup():
+    collection = db.managers
     manager_name = request.form['manager_name']
     account = request.form['account']
     password = request.form['password']
 
-    collection = db.managers
     result = collection.find_one({
-        "account": account,
+        "$or": [
+            {"manager_name": manager_name},
+            {"account": account},
+        ]
     })
     if result != None:
-        return redirect("/error?msg=帳號已被註冊")
+        return redirect("/error?msg=該管理員帳號已被註冊")
 
     collection.insert_one({
         "manager_name": manager_name,
         "account": account,
         "password": password,
     })
-    return redirect("/manager_signup_page")
-
-
-@app.route("/manager_signup_page", methods=["POST"])
-def manager_signup_page():
-    return render_template('manager_signup.html')
-
+    return redirect("/")
+    # return redirect("/manager_signup_page")
 
 # 錯誤route
 @app.route("/error")
@@ -825,19 +840,6 @@ def manager_signout():
     del session['account']
     del session['manager_name']
     return redirect("/")
-
-# 暫時新增使用者帳號
-# @app.route("/admin")
-# def admin():
-#     collection = db.managers
-
-#     collection.insert_one({
-#         "manager_name": '柏安',
-#         "account": 'test',
-#         "password": 'test',
-#     })
-#     return redirect("/")
-
 
 app.run(
     host= '0.0.0.0', #任何ip都可訪問

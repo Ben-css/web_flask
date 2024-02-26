@@ -1,71 +1,163 @@
-main {
-    display: inline-block;
+/*sorce:https://www.youtube.com/watch?v=2XhPa-1pl4Y&ab_channel=Ludiflex*/
+*{
+    font-family: 'Noto Sans TC', sans-serif;
 }
-
-.title {
-    border-collapse: collapse;
+.wapper{
+    background: hsl(0, 0%, 80%); 
+    padding: 0 20px;
+}
+.main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.side-image{
+    background-color: rgb(83, 83, 83);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px 0 0 12px;
+}
+.side-image .logo-image{
+    width: 90%;
+}
+.row{
+    width: 900px;
+    height: 550px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 5px 5px 10px 1px rgba(0,0,0,0.2);
+}
+.text{
     position: absolute;
-    font-size: 60px;
-    width: 50%;
-    height: 100%;
-    background-color: #5B5B5B;
-    color: white;
-    font-weight: bold;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    float: left;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
-
-article {
-    flex-wrap: wrap;
-    margin-top: 35%;
-    margin-left: 10%;
-    margin-right: 8%;
+.text h1{
+    color:white;
 }
-
-form {
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 50%;
-    height: 400px;
+.text img{
+    width: 100%;
+} 
+.manager-signup-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.input-box{
+    width: 330px;
+    box-sizing: border-box;
+}
+.input-box header{
+    font-size: 24px;
+    font-weight:700;
+    text-align: center;
+    margin-bottom: 45px;
+}
+.input-field{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0 10px 0 10px;
+}
+.input{
+    height: 45px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    outline: none;
+    margin-bottom: 20px;
+    color: #40414a
+}
+.input-box .input-field label{
     position: absolute;
-    /* background-color: aqua; */
-    margin-top: 7%;
+    top: 10px;
+    left: 10px;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.input-field .input:focus ~ label,
+.input-field .input ~ label {
+    top: -10px;
+    font-size: 12px;
+}
+
+.input-field .input:focus,
+.input-field .input {
+    border-bottom: 1px solid rgba(55, 175, 255, 0.2);
+}
+
+.error-message-container {
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
     text-align: center;
 }
 
-form>h1 {
-    margin-bottom: 5%;
+.error-message {
+    background-color: #ffcccc;
+    border: 1px solid #ff9999;
+    color: #cc0000;
+    padding: 10px;
+    border-radius: 5px;
+    width: 300px;
+    margin: 0 auto;
+    font-size: 14px;
 }
 
-form>span {
-    font-size: 16px;
-    font-weight: bold;
+.submit{
+    border: none;
+    outline: none;
+    height: 45px;
+    background: #ececec;
+    border-radius: 6px;
+    transition: .4s;
 }
-
-form>span>input {
-    margin: 10px;
-    font-size: 15px;
-    border-radius: 3px;
-    width: 220px;
-    height: 30px;
-
+.submit:hover{
+    background: rgba(17, 136, 216, 0.9);
+    color: #fff;
 }
-
-form>div>button {
-    margin-top: 30px;
-    color: white;
-    font-size: 16px;
-    border-radius: 20px;
-    border-color: #5B00AE;
-    padding: 4px 12px;
-    background-color: #5B00AE;
-}
-
-form>p {
+.register, .admin-login, .user-login, .back-login{
     text-align: center;
-    font-size: 16px;
-    margin-bottom: 30px;
+    font-size: small;
+    margin-top: 25px;
+}
+span a{
+    text-decoration: none;
+    font-weight: 700;
+    color: rgba(17, 136, 216, 0.9);
+    transition: .5s;
+}
+span a:hover{
+    text-decoration: underline;
+    color: black;
+}
+@media screen and (max-width:767.98px){
+    .side-image{
+        border-radius: 12px 12px 0 0;
+    }
+    .side-image .logo-image{
+        width: 60%;
+    }
+    .text{
+        position: absolute;
+        top: 70%;
+        text-align: center;
+    }
+    .text p,i{
+        font-size: 17px;
+    }
+    .row{
+        max-width: 420px;
+        height: 650px;
+        width: 100%;
+    }
 }

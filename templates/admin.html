@@ -17,49 +17,50 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC" type="text/css">
     <link rel="stylesheet" href="/css/mg_signup.css" type="text/css">
 
-    <title>管理員註冊｜南實大宿舍維修</title>
+    <title>管理員驗證｜南實大宿舍維修</title>
 </head>
 <body>
     <div class="wrapper">
         <div class="container main">
             <div class="row">
-                <div class="col-md-6 side-image" style="background-image: url('/img/background.jpeg');">
-                    <!--image-->
+                <!-- <div class="col-md-6 side-image" style="background-image: url('/img/background.jpeg');">
                     <img src="/img/dorm_logo.png" class="logo-image" alt="實踐大學高雄校區宿舍維修系統">
-                </div>
-                <div class="col-md-6 manager-signup-form">
+                </div> -->
+                <div class="col-md-12 manager-signup-form">
                     <div class="input-box">
-                        <header>管理員註冊</header>
-                        <form action="/manager_signup" method="post">
+                        <header>管理員驗證碼</header>
+                        <form action="/manager_signup_page" method="post"> 
                             <div class="input-field">
-                                <input type="text" class="input" id="manager_name" name="manager_name" required>
-                                <label for="student-id">姓名</label>
+                                <input type="text" class="input" id="" name="verification-code" minlength="8" maxlength="8" placeholder="請輸入驗證碼" required>
+                                <label for="verification-code">驗證碼</label>
                             </div>  
-                            <div class="input-field">
-                                <input type="text" class="input" id="account" name="account" required>
-                                <label for="account">工號</label>
-                            </div>                           
-                            <div class="input-field">
+                            <div class="error-message-container">
+                                {% if request.args.get('msg') %}
+                                    <div class="error-message" id="error-message">
+                                        {{ request.args.get('msg') }}
+                                    </div>
+                                {% endif %}
+                            </div>                       
+                            <!-- <div class="input-field">
                                 <input type="password" class="input" id="password" name="password" required>
                                 <label for="password">密碼</label>
-                            </div>
+                            </div> -->
                             <div class="input-field">
-                                <input type="submit" class="submit" value="註冊">
+                                <input type="submit" class="submit" value="送出">
                             </div>
                             <div class="user-login">
                                 <span><a href="/">回登入頁面</a></span>
                             </div>
                         </form>
+
+                       
                     </div>
                 </div>    
             </div>
         </div>
     </div>
-     <!-- 管理員註冊需要時再開  -->
-            <!-- <form action="/manager_signup_page" method="post">
-            <button type="submit" class="btn-link">&plus; 管理員註冊</button>
-        </form> -->
-    <!-- <script src="/js/index.js"></script> -->
+     
+    <script src="/js/admin.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 </body>
 </html>
