@@ -4,6 +4,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (errorMessage) {
         setTimeout(function() {
             errorMessage.style.display = 'none';
-        }, 10000); // 10秒後隱藏錯誤訊息
+        }, 5000); // 5秒後隱藏錯誤訊息
     }
 });

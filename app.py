@@ -789,7 +789,7 @@ def admin():
 @app.route("/manager_signup_page", methods=["POST"])
 def manager_signup_page():
     verification = request.form['verification-code']
-    if verification == "99999999":
+    if verification == "99887766":
         session["verification-code"] = verification
         return render_template('manager_signup.html')
     else:
@@ -817,6 +817,9 @@ def manager_signup():
         "account": account,
         "password": password,
     })
+    # 刪除驗證瑪
+    del session["verification-code"]
+    
     return redirect("/")
     # return redirect("/manager_signup_page")
 
